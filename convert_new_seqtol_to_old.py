@@ -1,5 +1,19 @@
 #!/usr/bin/python
 
+__author__ = "Kyle Barlow"
+__email__ = "kb@kylebarlow.com"
+
+# Script to convert sequence tolerance generations and entities files output
+# by newer versions of Rosetta into the same file format used by Colin's R
+# scripts when he originally published the method
+
+# Usage: Takes a single argument: directory containing sequence tolerance output
+#  Output .entities.gz and .generations.gz files can be in any subdirectory of
+#  the passed in directory argument - the script WILL find them
+
+### WARNING: the script also overwrites these files in place, so you probably
+### should make a backup first
+
 import os
 import gzip
 from subprocess import Popen, PIPE, check_call
