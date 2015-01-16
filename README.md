@@ -141,5 +141,8 @@
 
 # Other Comments: 
 
+This protocol capture is based off the original captures from the Smith & Kortemme papers however most of the output directories have been excluded here to reduce the size of the repository.
+
+The remaining output directories can be found in the RosettaCommons repositories (https://github.com/RosettaCommons/demos/tree/master/protocol_capture/2010/backrub_seqtol) or at http://kortemmelab.ucsf.edu/data/.
 
 
