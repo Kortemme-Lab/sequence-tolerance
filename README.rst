@@ -1,148 +1,253 @@
-### General Information ##################
-# Your name: Colin A. Smith
+====================================
+Sequence tolerance benchmark
+====================================
 
-# Protocol Name: backrub_seqtol (Backrub/Sequence Tolerance)
+Sequence tolerance protocols predict the tolerated sequence space for a given protein-protein interface or protein domain. The benchmark currently contains one such protocol capture. Analysis is provided by an R script which creates a series of figures and a position weight matrix.
 
-# Brief Description:
-# This protocol is designed to predict the tolerated sequence space for a
-# given protein-protein interface or protein domain. It involves generating an
-# ensemble of backbone structures by running backrub simulations on an input
-# structure. For each member of the ensemble, a large number of sequences are 
-# scored and then Boltzmann weighted to generate a position weight matrix for
-# the specified sequence positions. Interactions within and between different
-# parts of the structure can be individually reweighted, depending on the
-# desired objective.
+--------------------------------------
+Analysis
+--------------------------------------
 
-# Updates to this protocol capture can be found at:
-# http://kortemmelab.ucsf.edu/data/
+The analysis is performed by an R script:
 
-### running #########
-# To run this protocol, the backrub app is used to generate an ensemble of
-# structures. After that, sequence_tolerance is used to sample a large number
-# of sequence for each member of the ensemble. Finally, an R script is used to
-# process the results. A python script is included which handles generation of
-# single ensemble member using backrub and sequence scoring using
-# sequence_tolerance. It includes a few paths which must be customized to run
-# correctly on a user's system. Please note that 20 backbones is the minimum
-# suggested to get acceptable output. The more backbone structures that are
-# generated, the less prone the results will be to stochastic fluctuations.
+:: 
 
-# Common Flags:
-# -s
-#   This flag specifies the starting structure.
-# -resfile
-#   This is used in backrub and sequence_tolerance to specify mutations and 
-#   control sequence sampling. It is required for sequence_tolerance.
-# -score:weights
-#   This flag is used to specify a weights file that disables environment 
-#   dependent hydrogen bonds.
-# -score:patch
-#   This flag must be used to reapply the score12 patch to the standard scoring
-#   function.
-# -ex1 -ex2 -extrachi_cutoff
-#   These flags enable higher resolution rotamer librares for mutation and
-#   sequence redesign.
-#
-# backrub flags:
-# -backrub:ntrials
-#   This flag is used to increase the number of Monte Carlo steps above the
-#   default of 1000.
-# -backrub:minimize_movemap
-#   If mutations are specified in the resfile, this movemap is used to 
-#   specify degrees of freedom to be minimized in a three stage process:
-#   CHI, CHI+BB, CHI+BB+JUMP.
-# -in:file:movemap -sm_prob
-#   Both of these flags are required to enable small phi/psi moves during
-#   backrub sampling.
-#
-# sequence_tolerance flags:
-# -ms:checkpoint:prefix -ms:checkpoint:interval
-#   Both of these flags must be specified to get output of the scored sequences.
-# -ms:generations -ms:pop_size -ms:pop_from_ss
-#   These flags affect the genetic algorithm used for sequence sampling.
-# -score:ref_offsets
-#   This flag is used to reweight the reference energies for given residues.
-# -seq_tol:fitness_master_weights
-#   This flag controls the fitness function used for the genetic algorithm.
+  cd output/1N7T
+  R
+  > source("../../scripts/sequence_tolerance.R")
+  > process_specificity()
 
-# Example Rosetta Command Line:
-# rosetta-3.2/rosetta_source/bin/backrub.linuxgccrelease -database rosetta-3.2/rosetta_database -s input_files/2I0L_A_C_V2006/2I0L_A_C_V2006.pdb -ex1 -ex2 -extrachi_cutoff 0 -mute core.io.pdb.file_data -backrub:ntrials 10000 -score:weights input_files/standard_NO_HB_ENV_DEP.wts -score:patch score12
-# rosetta-3.2/rosetta_source/bin/sequence_tolerance.linuxgccrelease -database rosetta-3.2/rosetta_database -s 2I0L_A_C_V2006_0001_low.pdb -ex1 -ex2 -extrachi_cutoff 0 -score:ref_offsets HIS 1.2 -seq_tol:fitness_master_weights 1 1 1 2 -ms:generations 5 -ms:pop_size 2000 -ms:pop_from_ss 1 -ms:checkpoint:prefix 2I0L_A_C_V2006_0001 -ms:checkpoint:interval 200 -ms:checkpoint:gz -score:weights input_files/standard_NO_HB_ENV_DEP.wts -out:prefix 2I0L_A_C_V2006_0001 -score:patch score12 -resfile input_files/2I0L_A_C_V2006/2I0L_A_C_V2006_seqtol.resfile
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+Generating Smith & Kortemme PLoS One 2011 figures
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-# Using the seqtol_resfile.py python script
-# The seqtol_resfile.py takes as input a PDB file and generates a resfile for
-# use with the sequence_tolerance app. It takes at least two other required
-# arguments. The first is the command used for making residues designable. This
-# is usually either "ALLAA" for all amino acids, or "PIKAA ..." for a 
-# restricted set of amino acids. The next arguments are the residues which 
-# should be designable, with the chain and residue number separated by a
-# colon.
+::
 
-# Example seqtol_resfile.py Command Line:
-# scripts/seqtol_resfile.py input_files/2I0L_A_C_V2006/2I0L_A_C_V2006.pdb "PIKAA ADEFGHIKLMNPQRSTVWY" B:2002 B:2003 B:2004 B:2005 B:2006
+  cd output
+  R
+  > source("../scripts/figures.R")
 
-# Using the backrub_seqtol.py python script
-# The backrub_seqtol.py script takes as input a PDB file and other similarly
-# named configuration files, and produces a single backrub ensemble member
-# along with approximately 10,000 scored sequences on that member. All of the
-# input files use a base name derived from removing the ".pdb" extension from
-# the PDB file. For instance, the base name of 1MGF.pdb would be 1MFG.
-#
-# If you want to use one PDB file with many different input files you can 
-# specify a different path from which to get the input files.
-#
-# Required input files:
-# <base name>_seqtol.resfile
-#   This resfile specifies which sequence positions to sample, along with the
-#   residue positions that should be repacked.
-#
-# Optional input files:
-# <base name>_backrub.resfile
-#   This resfile specifies which residues should have flexible side chains
-#   during the backrub run. By default, all side chains are flexible. This file
-#   can also define mutations that should be made to the input structure prior
-#   to the backrub simulation.
-# <base name>_minimize.movemap
-#   This file is passed to the -backrub:minimize_movemap flag (see above).
-# <base name>_perturb.movemap
-#   This file is passed to the -in:file:movemap flag (see above). It also sets
-#   -sm_prob flag to 0.1.
+--------------------------------------
+Protocol 1: Backrub/Sequence Tolerance
+--------------------------------------
 
-# Example Overall Command Line:
-# scripts/backrub_seqtol.py input_files/2I0L_A_C_V2006/2I0L_A_C_V2006.pdb 1
+~~~~~~~~~~~~~~~~~~~
+General Information
+~~~~~~~~~~~~~~~~~~~
 
-# Post-processing with R:
-# cd output/2I0L_A_C_V2006
-# R
-# > source("rosetta-3.2/rosetta_source/analysis/apps/sequence_tolerance.R")
-# > process_specificity()
+Created by: Colin A. Smith [1]_
 
-# Generating Smith & Kortemme PLoS One 2011 figures:
-# cd output
-# R
-# rosetta_analysis_dir <- "rosetta-3.2/rosetta_source/analysis"
-# source("../scripts/figures.R")
+Software suite: Rosetta
 
-### versions #########
-# This protocol used the Rosetta 3.2 release version
+Protocol directory: backrub_seqtol
 
-# Several other scripting/analysis tools were used:
-# Python 2.4.3
-# R 2.12.1
+~~~~~~~~~~~~~~~~~
+Description
+~~~~~~~~~~~~~~~~~
 
-# References to published works using this protocol:
-# Smith, C. A. & Kortemme, T. (2010) Structure-Based Prediction of the Peptide 
-# Sequence Space Recognized by Natural and Synthetic PDZ Domains. J Mol Biol 
-# 402, 460-474.
-# Smith, C. A. & Kortemme, T. (2011) Predicting the Tolerated Sequences for 
-# Proteins and Protein Interfaces Using RosettaBackrub Flexible Backbone Design.
-# PLoS One 10.1371/journal.pone.0020451
+The method first generates an ensemble of backbone structures by running backrub simulations on an input structure. For each member of the ensemble, a large number of sequences are scored and then Boltzmann weighted to generate a position weight matrix for the specified sequence positions. Interactions within and between different parts of the structure can be individually reweighted, depending on the desired objective.
+
+~~~~~~~~~~~~
+Instructions
+~~~~~~~~~~~~
+
+To run this protocol, the backrub application is used to generate an ensemble of structures. Next, the sequence tolerance application is used to sample a large number of sequence for each member of the ensemble. A python script is included which handles generation of single ensemble member using backrub and sequence scoring using sequence_tolerance. It includes a few paths which must be customized to run correctly on a user's system. Please note that 20 backbones is the minimum suggested to get acceptable output. The more backbone structures that are generated, the less prone the results will be to stochastic fluctuations.
+
+~~~~~~~~~~~~
+Common Flags
+~~~~~~~~~~~~
+
+_____________
+General flags
+_____________
+
++----------------------------+-------------------------------------------------------------------------------------------------------------------------------------------+
++============================+===========================================================================================================================================+
+| -s 	                     | This flag specifies the starting structure.                                                                                               |
++----------------------------+-------------------------------------------------------------------------------------------------------------------------------------------+
+| -resfile                   | This is used in backrub and sequence_tolerance to specify mutations and control sequence sampling. It is required for sequence_tolerance. |
++----------------------------+-------------------------------------------------------------------------------------------------------------------------------------------+
+| -score:weights             | This flag is used to specify a weights file that disables environment dependent hydrogen bonds.                                           |
++----------------------------+-------------------------------------------------------------------------------------------------------------------------------------------+
+| -score:patch               | This flag must be used to reapply the score12 patch to the standard scoring function.                                                     |
++----------------------------+-------------------------------------------------------------------------------------------------------------------------------------------+
+| -ex1 -ex2 -extrachi_cutoff | These flags enable higher resolution rotamer librares for mutation and sequence redesign.                                                 |
++----------------------------+-------------------------------------------------------------------------------------------------------------------------------------------+
 
 
-# Other Comments: 
 
-This protocol capture is based off the original captures from the Smith & Kortemme papers however most of the output directories have been excluded here to reduce the size of the repository.
+_____________
+Backrub flags
+_____________
 
-The remaining output directories can be found in the RosettaCommons repositories (https://github.com/RosettaCommons/demos/tree/master/protocol_capture/2010/backrub_seqtol) or at http://kortemmelab.ucsf.edu/data/.
 
+
++---------------------------+-------------------------------------------------------------------------------------------------------------------------------------------------------------------+
++===========================+===================================================================================================================================================================+
+| -backrub:ntrials          | This flag is used to increase the number of Monte Carlo steps above the default of 1000.                                                                          |
++---------------------------+-------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+| -backrub:minimize_movemap | If mutations are specified in the resfile, this movemap is used to specify degrees of freedom to be minimized in a three stage process: CHI, CHI+BB, CHI+BB+JUMP. |
++---------------------------+-------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+| -in:file:movemap -sm_prob | Both of these flags are required to enable small phi/psi moves during backrub sampling.                                                                           |
++---------------------------+-------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+
+
+
+
+________________________
+Sequence_tolerance flags
+________________________
+
++-----------------------------------------------+------------------------------------------------------------------------------+
++===============================================+==============================================================================+
+| -ms:checkpoint:prefix -ms:checkpoint:interval | Both of these flags must be specified to get output of the scored sequences. |
++-----------------------------------------------+------------------------------------------------------------------------------+
+| -ms:generations -ms:pop_size -ms:pop_from_ss  | These flags affect the genetic algorithm used for sequence sampling.         |  
++-----------------------------------------------+------------------------------------------------------------------------------+
+| -score:ref_offsets                            | This flag is used to reweight the reference energies for given residues.     |
++-----------------------------------------------+------------------------------------------------------------------------------+
+| -seq_tol:fitness_master_weights               | This flag controls the fitness function used for the genetic algorithm.      |
++-----------------------------------------------+------------------------------------------------------------------------------+
+
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+Example command lines
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+____________
+Backrub step
+____________
+
+''''''''''''
+Rosetta 3.2
+''''''''''''
+
+::
+
+  rosetta-3.2/rosetta_source/bin/backrub.linuxgccrelease -database rosetta-3.2/rosetta_database 
+  -s input/pdbs/1N7T_01.pdb -ex1 -ex2 -extrachi_cutoff 0 -mute core.io.pdb.file_data 
+  -backrub:ntrials 10000 -score:weights input/backrub_seqtol/rosetta3.2/standard_NO_HB_ENV_DEP.wts 
+  -score:patch score12
+
+''''''''''''''''''''''''''''''''
+Rosetta, 2013-08-11 onwards [2]_
+''''''''''''''''''''''''''''''''
+
+::
+
+  rosetta/source/bin/backrub.linuxgccrelease -database rosetta/database 
+  -s input/pdbs/1N7T_01.pdb -ex1 -ex2 -extrachi_cutoff 0 -mute core.io.pdb.file_data 
+  -backrub:ntrials 10000 
+
+_______________________
+Sequence tolerance step
+_______________________
+
+''''''''''''
+Rosetta 3.2
+''''''''''''
+
+::
+
+  rosetta-3.2/rosetta_source/bin/sequence_tolerance.linuxgccrelease -database rosetta-3.2/rosetta_database
+  -s input/pdbs/1N7T_01_0001_low.pdb.gz -ex1 -ex2 -extrachi_cutoff 0 -score:ref_offsets HIS 1.2 
+  -seq_tol:fitness_master_weights 1 1 1 2 -ms:generations 5 -ms:pop_size 2000 -ms:pop_from_ss 1 
+  -ms:checkpoint:prefix 1N7T_01_0001 -ms:checkpoint:interval 200 -ms:checkpoint:gz 
+  -score:weights input/backrub_seqtol/rosetta3.2/standard_NO_HB_ENV_DEP.wts -out:prefix 1N7T_01_0001 
+  -score:patch score12 -resfile input/backrub_seqtol/1N7T_seqtol.resfile
+
+'''''''''''''''''''''''''''
+Rosetta, 2013-08-11 onwards
+'''''''''''''''''''''''''''
+
+::
+
+  rosetta/source/bin/sequence_tolerance.linuxgccrelease -database rosetta/database   
+  -s input/pdbs/1N7T_01_0001_low.pdb.gz -ex1 -ex2 -extrachi_cutoff 0 -ex1aro -ex2aro  
+  -seq_tol:fitness_master_weights 1 1 1 2 -ms:generations 5 -ms:pop_size 2000 -ms:pop_from_ss 1
+  -ms:checkpoint:prefix 1N7T_01_0001 -ms:checkpoint:interval 200 -ms:checkpoint:gz
+  -out:prefix 1N7T_01_0001 -resfile input/backrub_seqtol/1N7T_seqtol.resfile
+
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+Using the seqtol_resfile.py python script
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+The seqtol_resfile.py takes as input a PDB file and generates a resfile for use with the sequence_tolerance app. It takes at least two other required arguments. The first is the command used for making residues designable. This is usually either "ALLAA" for all amino acids, or "PIKAA ..." for a restricted set of amino acids. The next arguments are the residues which should be designable, with the chain and residue number separated by a colon.
+
+______________________________________
+Example seqtol_resfile.py Command Line
+______________________________________
+
+::
+
+  scripts/seqtol_resfile.py input/pdbs/2I0L_A_C_V2006/2I0L_A_C_V2006.pdb "PIKAA ADEFGHIKLMNPQRSTVWY" B:2002 B:2003 B:2004 B:2005 B:2006
+
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+Using the backrub_seqtol.py python script
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+The backrub_seqtol.py script takes as input a PDB file and other similarly named configuration files, and produces a single backrub ensemble member along with approximately 10,000 scored sequences on that member. All of the input files use a base name derived from removing the ".pdb" extension from the PDB file. For instance, the base name of 1MGF.pdb would be 1MFG.
+
+If you want to use one PDB file with many different input files you can specify a different path from which to get the input files.
+
+____________________
+Required input files
+____________________
++----------------------------+----------------------------------------------------------------------------------------------------------------------+
++============================+======================================================================================================================+
+| <base name>_seqtol.resfile | This resfile specifies which sequence positions to sample, along with the residue positions that should be repacked. |
++----------------------------+----------------------------------------------------------------------------------------------------------------------+
+
+____________________
+Optional input files
+____________________
+
++------------------------------+----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
++==============================+==========================================================================================================================================================================================================================================================+
+| <base name>_backrub.resfile  | This resfile specifies which residues should have flexible side chains during the backrub run. By default, all side chains are flexible. This file can also define mutations that should be made to the input structure prior to the backrub simulation. |
++------------------------------+----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+| <base name>_minimize.movemap | This file is passed to the -backrub:minimize_movemap flag (see above).                                                                                                                                                                                   |
++------------------------------+----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+| <base name>_perturb.movemap  | This file is passed to the -in:file:movemap flag (see above). It also sets -sm_prob flag to 0.1.                                                                                                                                                         |
++------------------------------+----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+
+
+____________________________
+Example Overall Command Line
+____________________________
+
+::
+  
+  scripts/backrub_seqtol.py input_files/2I0L_A_C_V2006/2I0L_A_C_V2006.pdb 1
+
+
+~~~~~~~~~~~~~~~~~~~~~~~~
+Supporting tool versions
+~~~~~~~~~~~~~~~~~~~~~~~~
+
+This protocol capture has been tested with:
+
+- Python 2.4.3 and R 2.12.1
+- Python 2.7.8 and R 3.1.1
+
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+References to published works using this protocol
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+Smith, CA, Kortemme, T. Structure-Based Prediction of the Peptide Sequence Space Recognized by Natural and Synthetic PDZ Domains. 2010. J Mol Biol 402(2):460-74. `doi: 10.1016/j.jmb.2010.07.032 <http://dx.doi.org/10.1016/j.jmb.2010.07.032>`_.
+
+Smith, CA, Kortemme, T. Predicting the Tolerated Sequences for Proteins and Protein Interfaces Using RosettaBackrub Flexible Backbone Design. 2011.
+PLoS ONE 6(7):e20451. `doi: 10.1371/journal.pone.0020451 <http://dx.doi.org/10.1371/journal.pone.0020451>`_.
+
+~~~~~
+Notes
+~~~~~
+
+This protocol capture is based off the original captures from the Smith & Kortemme papers listed above however most of the output directories have been excluded here to reduce the size of the repository.
+
+The original output directories can be found in the `RosettaCommons repositories <https://github.com/RosettaCommons/demos/tree/master/protocol_capture/2010/backrub_seqtol>`_ or at http://kortemmelab.ucsf.edu/data/.
+
+
+.. [1] The original version of this protocol capture was developed and tested for Rosetta 3.2. Any errors in the current version above are likely to be our fault rather than that of the original author. Please contact support@kortemmelab.ucsf.edu with any issues which may arise. 
+
+.. [2] The default Rosetta score function switched to Talaris 2013, making some previous flags redundant.
 
