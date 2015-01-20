@@ -10,7 +10,7 @@ Analysis
 
 The analysis is performed by an R script:
 
-:: 
+::
 
   cd output/1N7T
   R
@@ -26,6 +26,19 @@ Generating Smith & Kortemme PLoS One 2011 figures
   cd output
   R
   > source("../scripts/figures.R")
+
+~~~~~~~~~~~~~~~~~~~~~~~~~~~
+Directories in this archive
+~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+This archive contains the following directories:
+
+- *input* : contains the input files for the benchmark. Input files specific to a particular protocol are in a subdirectory named after the protocol.
+- *output* : these directories are empty by default. This is the default output location for protocols if they are run on the local machine.
+- *output/sample* : contains sample output data that can be used to test the analysis scripts.
+- *analysis* : contains the analysis scripts used to analyze the output of a prediction run. All protocols are expected to produce output that will work with the analysis scripts.
+- *protocols* : contains the scripts needed to run a job. The scripts for a protocol are provided in a specific subdirectory.
+- *hpc* : contains scripts that can be used to run the entire benchmark using specific cluster architectures. For practical reasons, a limited number of cluster systems are supported. Please feel free to provide scripts which run the benchmark for your particular cluster system.
 
 --------------------------------------
 Protocol 1: Backrub/Sequence Tolerance
@@ -102,7 +115,7 @@ ________________________
 +===============================================+==============================================================================+
 | -ms:checkpoint:prefix -ms:checkpoint:interval | Both of these flags must be specified to get output of the scored sequences. |
 +-----------------------------------------------+------------------------------------------------------------------------------+
-| -ms:generations -ms:pop_size -ms:pop_from_ss  | These flags affect the genetic algorithm used for sequence sampling.         |  
+| -ms:generations -ms:pop_size -ms:pop_from_ss  | These flags affect the genetic algorithm used for sequence sampling.         |
 +-----------------------------------------------+------------------------------------------------------------------------------+
 | -score:ref_offsets                            | This flag is used to reweight the reference energies for given residues.     |
 +-----------------------------------------------+------------------------------------------------------------------------------+
@@ -123,9 +136,9 @@ Rosetta 3.2
 
 ::
 
-  rosetta-3.2/rosetta_source/bin/backrub.linuxgccrelease -database rosetta-3.2/rosetta_database 
-  -s input/pdbs/1N7T_01.pdb -ex1 -ex2 -extrachi_cutoff 0 -mute core.io.pdb.file_data 
-  -backrub:ntrials 10000 -score:weights input/backrub_seqtol/rosetta3.2/standard_NO_HB_ENV_DEP.wts 
+  rosetta-3.2/rosetta_source/bin/backrub.linuxgccrelease -database rosetta-3.2/rosetta_database
+  -s input/pdbs/1N7T_01.pdb -ex1 -ex2 -extrachi_cutoff 0 -mute core.io.pdb.file_data
+  -backrub:ntrials 10000 -score:weights input/backrub_seqtol/rosetta3.2/standard_NO_HB_ENV_DEP.wts
   -score:patch score12
 
 ''''''''''''''''''''''''''''''''
@@ -134,9 +147,9 @@ Rosetta, 2013-08-11 onwards [2]_
 
 ::
 
-  rosetta/source/bin/backrub.linuxgccrelease -database rosetta/database 
-  -s input/pdbs/1N7T_01.pdb -ex1 -ex2 -extrachi_cutoff 0 -mute core.io.pdb.file_data 
-  -backrub:ntrials 10000 
+  rosetta/source/bin/backrub.linuxgccrelease -database rosetta/database
+  -s input/pdbs/1N7T_01.pdb -ex1 -ex2 -extrachi_cutoff 0 -mute core.io.pdb.file_data
+  -backrub:ntrials 10000
 
 _______________________
 Sequence tolerance step
@@ -149,10 +162,10 @@ Rosetta 3.2
 ::
 
   rosetta-3.2/rosetta_source/bin/sequence_tolerance.linuxgccrelease -database rosetta-3.2/rosetta_database
-  -s input/pdbs/1N7T_01_0001_low.pdb.gz -ex1 -ex2 -extrachi_cutoff 0 -score:ref_offsets HIS 1.2 
-  -seq_tol:fitness_master_weights 1 1 1 2 -ms:generations 5 -ms:pop_size 2000 -ms:pop_from_ss 1 
-  -ms:checkpoint:prefix 1N7T_01_0001 -ms:checkpoint:interval 200 -ms:checkpoint:gz 
-  -score:weights input/backrub_seqtol/rosetta3.2/standard_NO_HB_ENV_DEP.wts -out:prefix 1N7T_01_0001 
+  -s input/pdbs/1N7T_01_0001_low.pdb.gz -ex1 -ex2 -extrachi_cutoff 0 -score:ref_offsets HIS 1.2
+  -seq_tol:fitness_master_weights 1 1 1 2 -ms:generations 5 -ms:pop_size 2000 -ms:pop_from_ss 1
+  -ms:checkpoint:prefix 1N7T_01_0001 -ms:checkpoint:interval 200 -ms:checkpoint:gz
+  -score:weights input/backrub_seqtol/rosetta3.2/standard_NO_HB_ENV_DEP.wts -out:prefix 1N7T_01_0001
   -score:patch score12 -resfile input/backrub_seqtol/1N7T_seqtol.resfile
 
 '''''''''''''''''''''''''''
@@ -161,8 +174,8 @@ Rosetta, 2013-08-11 onwards
 
 ::
 
-  rosetta/source/bin/sequence_tolerance.linuxgccrelease -database rosetta/database   
-  -s input/pdbs/1N7T_01_0001_low.pdb.gz -ex1 -ex2 -extrachi_cutoff 0 -ex1aro -ex2aro  
+  rosetta/source/bin/sequence_tolerance.linuxgccrelease -database rosetta/database
+  -s input/pdbs/1N7T_01_0001_low.pdb.gz -ex1 -ex2 -extrachi_cutoff 0 -ex1aro -ex2aro
   -seq_tol:fitness_master_weights 1 1 1 2 -ms:generations 5 -ms:pop_size 2000 -ms:pop_from_ss 1
   -ms:checkpoint:prefix 1N7T_01_0001 -ms:checkpoint:interval 200 -ms:checkpoint:gz
   -out:prefix 1N7T_01_0001 -resfile input/backrub_seqtol/1N7T_seqtol.resfile
@@ -216,7 +229,7 @@ Example Overall Command Line
 ____________________________
 
 ::
-  
+
   scripts/backrub_seqtol.py input_files/2I0L_A_C_V2006/2I0L_A_C_V2006.pdb 1
 
 
@@ -247,7 +260,7 @@ This protocol capture is based off the original captures from the Smith & Kortem
 The original output directories can be found in the `RosettaCommons repositories <https://github.com/RosettaCommons/demos/tree/master/protocol_capture/2010/backrub_seqtol>`_ or at http://kortemmelab.ucsf.edu/data/.
 
 
-.. [1] The original version of this protocol capture was developed and tested for Rosetta 3.2. Any errors in the current version above are likely to be our fault rather than that of the original author. Please contact support@kortemmelab.ucsf.edu with any issues which may arise. 
+.. [1] The original version of this protocol capture was developed and tested for Rosetta 3.2. Any errors in the current version above are likely to be our fault rather than that of the original author. Please contact support@kortemmelab.ucsf.edu with any issues which may arise.
 
 .. [2] The default Rosetta score function switched to Talaris 2013, making some previous flags redundant.
 
