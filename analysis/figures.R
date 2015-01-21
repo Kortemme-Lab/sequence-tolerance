@@ -386,7 +386,8 @@ jmb2010_table2 <- function() {
 	stats_table(group_expfreq_list, group_predfreq_list)
 }
 
-source("sequence_tolerance.R")
+sequence_tolerance_analysis_script <- paste(sep="/", dirname(sys.frame(1)$ofile), "sequence_tolerance.R")
+source(sequence_tolerance_analysis_script)
 
 ### Updated Functions from sequence_tolerance.R ###
 
@@ -729,6 +730,7 @@ dev.off()
 
 } # end if
 
+print('The script will now fail if the full set of output data is missing. Please see the main readme.rst file for more details.')
 
 ### Figure 3 and S4 ###
 
@@ -783,7 +785,6 @@ for (i in seq_len(ncol(hgh_star_mat))) {
 postscript("Figure3_1A22SeqRankTable.eps", FALSE, "Arial", width=6.83, height=4, pointsize=10, horizontal=FALSE, paper="special")
 hgh_bind_freq_ordered <- plot_seqrank(hgh_freq[,hgh_table_pos], hgh_bind_freq[,hgh_table_pos], hgh_wt_seq[hgh_table_pos], hgh_star_mat, rank_line=5)
 dev.off()
-
 
 ### Figure 4 ###
 
