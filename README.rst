@@ -4,32 +4,9 @@ Sequence tolerance benchmark
 
 Sequence tolerance protocols predict the tolerated sequence space for a given protein-protein interface or protein domain. The benchmark currently contains one such protocol capture. Analysis is provided by an R script which creates a series of figures and a position weight matrix.
 
---------------------------------------
-Analysis
---------------------------------------
-
-The analysis is performed by an R script:
-
-::
-
-  cd output/1N7T
-  R
-  > source("../../scripts/sequence_tolerance.R")
-  > process_specificity()
-
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-Generating Smith & Kortemme PLoS One 2011 figures
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-::
-
-  cd output
-  R
-  > source("../scripts/figures.R")
-
-~~~~~~~~~~~~~~~~~~~~~~~~~~~
+---------------------------
 Directories in this archive
-~~~~~~~~~~~~~~~~~~~~~~~~~~~
+---------------------------
 
 This archive contains the following directories:
 
@@ -39,6 +16,75 @@ This archive contains the following directories:
 - *analysis* : contains the analysis scripts used to analyze the output of a prediction run. All protocols are expected to produce output that will work with the analysis scripts.
 - *protocols* : contains the scripts needed to run a job. The scripts for a protocol are provided in a specific subdirectory.
 - *hpc* : contains scripts that can be used to run the entire benchmark using specific cluster architectures. For practical reasons, a limited number of cluster systems are supported. Please feel free to provide scripts which run the benchmark for your particular cluster system.
+
+--------------------------------------
+Analysis
+--------------------------------------
+
+~~~~~~~~~~~~~~~~~~~~~~~~
+Required tools
+~~~~~~~~~~~~~~~~~~~~~~~~
+
+The analysis scripts require the `R software suite <http://www.r-project.org>`_. The scripts have been tested using R
+versions 2.12.1 and 3.1.1.
+
+~~~~~~~~~~~~~
+Main analysis
+~~~~~~~~~~~~~
+
+The main analysis is performed by an R script. Navigate to the directory with the output data from the run and then call this R script *i.e.*:
+
+::
+
+  cd output/sample
+  R
+  > source("../../analysis/sequence_tolerance.R")
+  > process_specificity()
+
+This should create boxplots for the mutated positions, a position weight matrix, and predicted ranking table for selected amino acid types for the positions.
+For more details, see the Smith & Kortemme 2010 paper (references below).
+
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+Generating figures as in the Smith & Kortemme PLoS One 2011 paper
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+The analysis/figures.R script can be used to recreate figures akin to those in the 2011 paper. The commands below will recreate
+Figures 1 and 2 from that paper as we have included some sample output files. To recreate the other figures, you will need to download
+the full set of output data (see Notes below).
+
+::
+
+  cd output
+  R
+  > source("../analysis/figures.R")
+
+_______________
+Troubleshooting
+_______________
+
+If you receive the error message "unknown family 'Arial'" then you may be missing the Arial fonts used by the script. These
+commands may fix the issue if you have the Arial.ttf installed on your system.
+
+::
+
+  > install.packages("extrafont")
+  > library("extrafont")
+  > font_import()
+
+The result of running:
+
+::
+
+  > fonts()
+
+should now include the Arial font. Exit R and now run:
+
+::
+
+  R
+  > library("extrafont")
+  > source("../analysis/figures.R")
+
 
 --------------------------------------
 Protocol 1: Backrub/Sequence Tolerance
@@ -58,7 +104,7 @@ Protocol directory: backrub_seqtol
 Description
 ~~~~~~~~~~~~~~~~~
 
-The method first generates an ensemble of backbone structures by running backrub simulations on an input structure. For each member of the ensemble, a large number of sequences are scored and then Boltzmann weighted to generate a position weight matrix for the specified sequence positions. Interactions within and between different parts of the structure can be individually reweighted, depending on the desired objective.
+This method first generates an ensemble of backbone structures by running backrub simulations on an input structure. For each member of the ensemble, a large number of sequences are scored and then Boltzmann weighted to generate a position weight matrix for the specified sequence positions. Interactions within and between different parts of the structure can be individually reweighted, depending on the desired objective.
 
 ~~~~~~~~~~~~
 Instructions
