@@ -1,5 +1,7 @@
 #!/usr/bin/python
 
+# The original version of this script was created by Colin A. Smith
+
 import math
 import os
 import re

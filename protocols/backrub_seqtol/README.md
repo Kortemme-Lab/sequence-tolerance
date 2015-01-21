@@ -1,26 +1,20 @@
-### General Information ##################
-# Your name: Colin A. Smith
+-------------------------------------------
+backrub_seqtol (Backrub/Sequence Tolerance)
+-------------------------------------------
 
-# Protocol Name: backrub_seqtol (Backrub/Sequence Tolerance)
+~~~~~~~~~~~~
+settings.ini
+~~~~~~~~~~~~
 
-# Brief Description:
-# This protocol is designed to predict the tolerated sequence space for a
-# given protein-protein interface or protein domain. It involves generating an
-# ensemble of backbone structures by running backrub simulations on an input
-# structure. For each member of the ensemble, a large number of sequences are 
-# scored and then Boltzmann weighted to generate a position weight matrix for
-# the specified sequence positions. Interactions within and between different
-# parts of the structure can be individually reweighted, depending on the
-# desired objective.
+This file contains configuration options for the script. Edit according to your Rosetta installation.
 
-# Updates to this protocol capture can be found at:
-# http://kortemmelab.ucsf.edu/data/
+~~~~~~~~~~~~~~~~~
+backrub_seqtol.py
+~~~~~~~~~~~~~~~~~
 
-### running #########
-# To run this protocol, the backrub app is used to generate an ensemble of
-# structures. After that, sequence_tolerance is used to sample a large number
-# of sequence for each member of the ensemble. Finally, an R script is used to
-# process the results. A python script is included which handles generation of
+This script runs ...
+
+ A python script is included which handles generation of
 # single ensemble member using backrub and sequence scoring using
 # sequence_tolerance. It includes a few paths which must be customized to run
 # correctly on a user's system. Please note that 20 backbones is the minimum

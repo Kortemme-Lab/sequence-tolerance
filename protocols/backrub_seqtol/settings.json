@@ -1,4 +1,7 @@
 {
-    'rosetta_installation_path'     : '/home/me/rosetta',
-    '
+    "rosetta_installation_path"     : "/home/me/rosetta",
+    "use_Rosetta_3.2_or_previous" : false,
+    "use_JMB_2010_settings" : false,
+    "custom_fitness_function_weights" : null,
+    "output_dir" : "../../output/backrub_seqtol",
 }
