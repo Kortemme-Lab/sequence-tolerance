@@ -9,7 +9,7 @@ This benchmark uses four different metrics:
 - Frobenius distance; and
 - Rank top.
 
-For more complete explanations of the metrics, the reader is referred to the 2010 publication from Smith and Kortemme. Much
+For more complete explanations of the metrics, the reader is referred to the 2010 publication from Smith and Kortemme [1]_. Much
 of the text below paraphrases explanations from that paper. In that paper, the authors mention that the combination of all of
 the metrics helped to guide and improve performance of their method.
 
@@ -33,15 +33,15 @@ of 0.5 represents random predictive power, 0.75 represents a good score/predicti
 Frobenius distance
 ------------------
 
-The Frobenius distance/norm (or Euclidean norm) is also considered. The best score is 0 and the worst is 2^0.5. On its own,
-this metric appears to be biased towards rewarding flat profiles rather than profiles with more information content / specificity [1]_.
+The Frobenius distance/norm (or Euclidean norm) is also considered. The best score is 0 and the worst is 2\ :sup:`1/2`. On its own,
+this metric appears to be biased towards rewarding flat profiles rather than profiles with more information content / specificity \[\ 1_\].
 
 --------
 Rank top
 --------
 
-The predicted rank of the most frequent experimentally observed amino acid. When the prediction had a tie situation, the
-maximum rank was used [1]_.
+The predicted rank of the most frequent experimentally observed amino acid. When the prediction has a tie situation, the
+maximum rank should be used \[\ 1_\].
 
 
 --------------------------------
@@ -57,6 +57,3 @@ References
 ~~~~~~~~~~
 
 .. [1] Smith, CA, Kortemme, T. Structure-Based Prediction of the Peptide Sequence Space Recognized by Natural and Synthetic PDZ Domains. 2010. J Mol Biol 402(2):460-74. `doi: 10.1016/j.jmb.2010.07.032 <http://dx.doi.org/10.1016/j.jmb.2010.07.032>`_.
-
-Smith, CA, Kortemme, T. Predicting the Tolerated Sequences for Proteins and Protein Interfaces Using RosettaBackrub Flexible Backbone Design. 2011.
-PLoS ONE 6(7):e20451. `doi: 10.1371/journal.pone.0020451 <http://dx.doi.org/10.1371/journal.pone.0020451>`_.
