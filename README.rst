@@ -58,6 +58,15 @@ the full set of output data (see Notes below).
   R
   > source("../analysis/figures.R")
 
+
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+Changes in the output format since the 2010 paper
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+The output of the sequence tolerance application changed in Rosetta version 36344 (2010). The versions of the analysis scripts contained
+herein expect output in the original format. The analysis/convert_new_seqtol_to_old.py script changes the output from newer revisions
+into the older format so that the analysis scripts will continue to work.
+
 _______________
 Troubleshooting
 _______________
@@ -168,6 +177,26 @@ ________________________
 | -seq_tol:fitness_master_weights               | This flag controls the fitness function used for the genetic algorithm.      |
 +-----------------------------------------------+------------------------------------------------------------------------------+
 
+~~~~~~~~~~~~~~~~~~~~~~~~~~
+Supplied single CPU script
+~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+The protocols/backrub_seqtol/backrub_seqtol.py script is provided to help with testing the protocol on a user workstation. It
+has been modified slightly from Colin Smith's original version. The line:
+
+::
+
+  score_weights = "standard"
+
+was changed to
+
+::
+
+  score_weights = "pre_talaris_2013_standard"
+
+due to a filename change in Rosetta revision 55274 (@2013-05-29).
+
+
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 Example command lines
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -186,6 +215,7 @@ Rosetta 3.2
   -s input/pdbs/1N7T_01.pdb -ex1 -ex2 -extrachi_cutoff 0 -mute core.io.pdb.file_data
   -backrub:ntrials 10000 -score:weights input/backrub_seqtol/rosetta3.2/standard_NO_HB_ENV_DEP.wts
   -score:patch score12
+
 
 ''''''''''''''''''''''''''''''''
 Rosetta, 2013-08-11 onwards [2]_
