@@ -113,13 +113,35 @@ Protocol directory: backrub_seqtol
 Description
 ~~~~~~~~~~~~~~~~~
 
-This method first generates an ensemble of backbone structures by running backrub simulations on an input structure. For each member of the ensemble, a large number of sequences are scored and then Boltzmann weighted to generate a position weight matrix for the specified sequence positions. Interactions within and between different parts of the structure can be individually reweighted, depending on the desired objective.
+This method first generates an ensemble of backbone structures by running backrub simulations on an input structure. For
+each member of the ensemble, a large number of sequences are scored and then Boltzmann weighted to generate a position
+weight matrix for the specified sequence positions. Interactions within and between different parts of the structure can
+be individually reweighted, depending on the desired objective.
 
 ~~~~~~~~~~~~
 Instructions
 ~~~~~~~~~~~~
 
-To run this protocol, the backrub application is used to generate an ensemble of structures. Next, the sequence tolerance application is used to sample a large number of sequence for each member of the ensemble. A python script is included which handles generation of single ensemble member using backrub and sequence scoring using sequence_tolerance. It includes a few paths which must be customized to run correctly on a user's system. Please note that 20 backbones is the minimum suggested to get acceptable output. The more backbone structures that are generated, the less prone the results will be to stochastic fluctuations.
+To run this protocol, the backrub application is used to generate an ensemble of structures. Next, the sequence tolerance
+application is used to sample a large number of sequence for each member of the ensemble. A python script is included which
+handles generation of single ensemble member using backrub and sequence scoring using sequence_tolerance. It includes a
+few paths which must be customized to run correctly on a user's system. Please note that 20 backbones is the minimum
+suggested to get acceptable output. The more backbone structures that are generated, the less prone the results will be
+to stochastic fluctuations.
+
+~~~~~~~~~~~~~~~~~~~~~~~~
+Protocol capture scripts
+~~~~~~~~~~~~~~~~~~~~~~~~
+
+The protocols/backrub_seqtol/backrub_seqtol.py script is provided to help with running the protocol. It has been modified
+slightly from Colin Smith's original version to try to accommodate changes in the Rosetta command-line flags and default
+score function since the original publications. The default settings use the latest default Rosetta score functions and
+assume a recent version of Rosetta. The script can also be configured for use with older versions of Rosetta so that results
+similar to the publications may be generated.
+
+The purpose of the scripts are to allow the user to use the best general settings. For fine tuning, please see the sections
+below describing the command line flags.
+
 
 ~~~~~~~~~~~~
 Common Flags
@@ -176,25 +198,6 @@ ________________________
 +-----------------------------------------------+------------------------------------------------------------------------------+
 | -seq_tol:fitness_master_weights               | This flag controls the fitness function used for the genetic algorithm.      |
 +-----------------------------------------------+------------------------------------------------------------------------------+
-
-~~~~~~~~~~~~~~~~~~~~~~~~~~
-Supplied single CPU script
-~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-The protocols/backrub_seqtol/backrub_seqtol.py script is provided to help with testing the protocol on a user workstation. It
-has been modified slightly from Colin Smith's original version. The line:
-
-::
-
-  score_weights = "standard"
-
-was changed to
-
-::
-
-  score_weights = "pre_talaris_2013_standard"
-
-due to a filename change in Rosetta revision 55274 (@2013-05-29).
 
 
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -255,58 +258,6 @@ Rosetta, 2013-08-11 onwards
   -seq_tol:fitness_master_weights 1 1 1 2 -ms:generations 5 -ms:pop_size 2000 -ms:pop_from_ss 1
   -ms:checkpoint:prefix 1N7T_01_0001 -ms:checkpoint:interval 200 -ms:checkpoint:gz
   -out:prefix 1N7T_01_0001 -resfile input/backrub_seqtol/1N7T_seqtol.resfile
-
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-Using the seqtol_resfile.py python script
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-The seqtol_resfile.py takes as input a PDB file and generates a resfile for use with the sequence_tolerance app. It takes at least two other required arguments. The first is the command used for making residues designable. This is usually either "ALLAA" for all amino acids, or "PIKAA ..." for a restricted set of amino acids. The next arguments are the residues which should be designable, with the chain and residue number separated by a colon.
-
-______________________________________
-Example seqtol_resfile.py Command Line
-______________________________________
-
-::
-
-  scripts/seqtol_resfile.py input/pdbs/2I0L_A_C_V2006/2I0L_A_C_V2006.pdb "PIKAA ADEFGHIKLMNPQRSTVWY" B:2002 B:2003 B:2004 B:2005 B:2006
-
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-Using the backrub_seqtol.py python script
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-The backrub_seqtol.py script takes as input a PDB file and other similarly named configuration files, and produces a single backrub ensemble member along with approximately 10,000 scored sequences on that member. All of the input files use a base name derived from removing the ".pdb" extension from the PDB file. For instance, the base name of 1MGF.pdb would be 1MFG.
-
-If you want to use one PDB file with many different input files you can specify a different path from which to get the input files.
-
-____________________
-Required input files
-____________________
-+----------------------------+----------------------------------------------------------------------------------------------------------------------+
-+============================+======================================================================================================================+
-| <base name>_seqtol.resfile | This resfile specifies which sequence positions to sample, along with the residue positions that should be repacked. |
-+----------------------------+----------------------------------------------------------------------------------------------------------------------+
-
-____________________
-Optional input files
-____________________
-
-+------------------------------+----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
-+==============================+==========================================================================================================================================================================================================================================================+
-| <base name>_backrub.resfile  | This resfile specifies which residues should have flexible side chains during the backrub run. By default, all side chains are flexible. This file can also define mutations that should be made to the input structure prior to the backrub simulation. |
-+------------------------------+----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
-| <base name>_minimize.movemap | This file is passed to the -backrub:minimize_movemap flag (see above).                                                                                                                                                                                   |
-+------------------------------+----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
-| <base name>_perturb.movemap  | This file is passed to the -in:file:movemap flag (see above). It also sets -sm_prob flag to 0.1.                                                                                                                                                         |
-+------------------------------+----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
-
-
-____________________________
-Example Overall Command Line
-____________________________
-
-::
-
-  scripts/backrub_seqtol.py input_files/2I0L_A_C_V2006/2I0L_A_C_V2006.pdb 1
 
 
 ~~~~~~~~~~~~~~~~~~~~~~~~

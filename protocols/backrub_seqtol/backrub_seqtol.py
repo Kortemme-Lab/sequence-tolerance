@@ -8,8 +8,9 @@
 #$ -l h_rt=10:00:00
 #$ -l arch=lx24-amd64
 
+# This script runs a backrub simulation followed by a sequence tolerance simulation on a single PDB structure.
+# The script is designed to run either on a typical workstation or as an SGE cluster submission script.
 # The original version of this script was created by Colin A. Smith.
-# Note: This script is designed to run either on a typical workstation or as an SGE cluster submission script.
 
 import socket
 import sys
@@ -71,6 +72,9 @@ if settings.get('use_Rosetta_3.2_or_previous'):
         histidine_offset = True
         score_weights = "standard"
         score_patch = "score12"
+if settings.get('use_PLOS_ONE_settings_with_modern_Rosetta'):
+    score_weights = "pre_talaris_2013_standard" # due to a filename change in Rosetta revision 55274 (@2013-05-29).
+    score_patch = "score12"
 
 
 # Determine the starting PDB structure from either the PDB_PATH environment
@@ -288,3 +292,4 @@ print "Time (seqtol):", datetime.timedelta(seconds = time_end - time_backrub_end
 print "Seconds:", time_end - time_start
 print "Time:", datetime.timedelta(seconds = time_end - time_start)
 print "Summary:", socket.gethostname(), time_end - time_start, datetime.timedelta(seconds = time_end - time_start)
+

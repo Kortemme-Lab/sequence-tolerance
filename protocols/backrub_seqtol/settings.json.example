@@ -2,6 +2,7 @@
     "rosetta_installation_path"     : "/home/me/rosetta",
     "use_Rosetta_3.2_or_previous" : false,
     "use_JMB_2010_settings" : false,
+    "use_PLOS_ONE_settings_with_modern_Rosetta" : false,
     "custom_fitness_function_weights" : null,
     "output_dir" : "../../output/backrub_seqtol",
 }
