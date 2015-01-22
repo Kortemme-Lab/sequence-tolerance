@@ -247,8 +247,8 @@ if os.path.exists(seqtol_resfile):
 
 
 # Normalize the command lines
-backrub_args = shlex.split(' '.join(backrub_args))
-seqtol_args = shlex.split(' '.join(seqtol_args))
+backrub_args = shlex.split(' '.join(backrub_args).encode('ascii')) # the encoding fixes a bug in shlex in Python 2.6.6
+seqtol_args = shlex.split(' '.join(seqtol_args).encode('ascii')) # the encoding fixes a bug in shlex in Python 2.6.6
 
 
 # Make the output directory and make it the working directory
