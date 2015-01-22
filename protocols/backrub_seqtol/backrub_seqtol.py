@@ -29,10 +29,13 @@ print("Python: %s" % sys.version)
 print("Host: %s" % socket.gethostname())
 
 
-# Users should change these variables to match their local environment
+# Users should change settings.json to match their local environment
 this_dir = os.path.dirname(os.path.realpath(__file__)) # note - this will fail under certain circumstances depending on how this script is called
-home_dir = os.path.expanduser("~")
-settings = json.loads(os.path.join(this_dir, 'settings.json'))
+settings_file = os.path.join(this_dir, 'settings.json')
+if not os.path.exists(settings_file):
+    print('Please create the configuration file settings.json.')
+settings = json.loads(open(settings_file).read())
+
 
 
 # Weights file. This was used for the version of the protocol in the publications but should be omitted when used with versions of Rosetta after version 55611 (2013-08-11).

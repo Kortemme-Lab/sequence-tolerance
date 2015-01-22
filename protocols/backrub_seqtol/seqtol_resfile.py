@@ -9,6 +9,18 @@ import re
 import sys
 import types
 import UserDict
+try:
+    import json
+except:
+    import simplejson as json
+
+# Users should change settings.json to match their local environment
+this_dir = os.path.dirname(os.path.realpath(__file__)) # note - this will fail under certain circumstances depending on how this script is called
+settings_file = os.path.join(this_dir, 'settings.json')
+if not os.path.exists(settings_file):
+    print('Please create the configuration file settings.json.')
+settings = json.loads(open(settings_file).read())
+
 
 residue_dict = {"ALA": "ALA", "CYS": "CYS", "ASP": "ASP", "ASH": "ASP", 
                 "GLU": "GLU", "GLH": "GLU", "PHE": "PHE", "GLY": "GLY", 
@@ -357,8 +369,8 @@ class SpatialHash:
 if __name__ == "__main__":
 
     if len(sys.argv) < 4:
-
-        print "Usage: ./seqtol_resfile pdb_path design_command pos_1 [pos_2] [...]"
+        print('Usage: ./seqtol_resfile pdb_path design_command pos_1 [pos_2] [...]')
+        print('e.g. ./seqtol_resfile ../../input/pdbs/2I0L_A_C_V2006/2I0L_A_C_V2006.pdb "PIKAA ADEFGHIKLMNPQRSTVWY" B:2002 B:2003 B:2004 B:2005 B:2006')
         sys.exit(1)
 
     pdb_path = sys.argv[1]
@@ -395,9 +407,21 @@ if __name__ == "__main__":
         elif resids[seqpos] in resids_repack:
             seqtol_resfile_lines.append(resfile_id + " NATAA\n")
 
-    base_path = os.path.splitext(pdb_path)[0]
-
-    resfile_path = base_path+"_seqtol.resfile"
+    output_dir = settings.get('output_dir')
+    if output_dir:
+        base_filename = os.path.splitext(os.path.split(pdb_path)[1])[0]
+        resfile_path = os.path.join(output_dir, "%s_seqtol.resfile" % base_filename)
+        try:
+            os.makedirs(output_dir)
+        except:
+            if not os.path.exists(output_dir):
+                print("The output directory %s could not be created." % output_dir)
+            else:
+                print("An error occurred while creating the output directory %s." % output_dir)
+            sys.exit(1)
+    else:
+        base_path = os.path.splitext(pdb_path)[0]
+        resfile_path = base_path + "_seqtol.resfile"
 
     seqtol_resfile = open(resfile_path, "w")
     seqtol_resfile.writelines(seqtol_resfile_lines)
