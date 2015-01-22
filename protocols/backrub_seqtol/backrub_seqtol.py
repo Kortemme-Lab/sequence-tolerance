@@ -25,8 +25,16 @@ except:
     import simplejson as json
 
 # Print the python/host information
-print("Python: %s" % sys.version)
+print("\nPython: %s" % sys.version)
 print("Host: %s" % socket.gethostname())
+
+
+# Test mode does restricted sampling to test that the protocol is correctly set up
+test_mode = False
+script_arguments = [a for a in sys.argv]
+if 'test_mode' in script_arguments:
+    test_mode = True
+script_arguments = [a for a in script_arguments if a != 'test_mode']
 
 
 # Users should change settings.json to match their local environment
@@ -84,8 +92,8 @@ if settings.get('use_PLOS_ONE_settings_with_modern_Rosetta'):
 # variable, or the first command line argument
 if os.environ.has_key("PDB_PATH"):
     pdb_path = os.path.abspath(os.environ["PDB_PATH"])
-elif len(sys.argv) >= 2:
-    pdb_path = os.path.abspath(sys.argv[1])
+elif len(script_arguments) >= 2:
+    pdb_path = os.path.abspath(script_arguments[1])
 else:
     sys.exit("No start PDB file specified")
 assert(os.path.exists(pdb_path))
@@ -96,8 +104,8 @@ assert(os.path.exists(pdb_path))
 iteration = 1
 if os.environ.has_key("SGE_TASK_ID"):
     iteration = int(os.environ["SGE_TASK_ID"])
-elif len(sys.argv) >= 3:
-    iteration = int(sys.argv[2])
+elif len(script_arguments) >= 3:
+    iteration = int(script_arguments[2])
 
 
 # Check if the start PDB string has valid substitution markers and, if so, choose the iteration-th PDB in the series
@@ -137,8 +145,8 @@ if settings.get('custom_fitness_function_weights'):
 input_path = os.path.splitext(pdb_path)[0]
 if os.environ.has_key("INPUT_PATH"):
     input_path = os.path.abspath(os.environ["INPUT_PATH"])
-elif len(sys.argv) >= 4:
-    input_path = os.path.abspath(sys.argv[3])
+elif len(script_arguments) >= 4:
+    input_path = os.path.abspath(script_arguments[3])
 
 # Determine input/output directories and filenames from the starting PDB
 pdb_name = os.path.split(os.path.splitext(pdb_path)[0])[-1]
@@ -150,18 +158,27 @@ else:
 output_prefix = input_name + "_%04i" % (iteration)
 
 # Print job summary information
+print("\nJob summary")
+print("-----------")
 print("Iteration: %d" % iteration)
-print("Database: %s", database_dir)
+print("Database: %s" % database_dir)
 print("PDB: %s" % pdb_path)
-print("PDB Chains: %s" % (", ".join(['"'+chain+'"' for chain in pdb_chains]))
+print("PDB Chains: %s" % (", ".join(['"'+chain+'"' for chain in pdb_chains])))
 print("Fitness Function Weights: %s" % (", ".join(fitness_function_weights)))
 print("Inputs: %s" % input_path)
 print("Output Directory: %s" % output_dir)
 print("Output Prefix: %s" % output_prefix)
 print("No hydrogen bond environment dependence: %s" % no_hb_env_dep)
 print("No score12 Patch: %s" % no_score12_patch)
-print("Histidine Offset: %s" % histidine_offset)
+print("Histidine Offset: %s\n" % histidine_offset)
 
+
+# Set up default parameters. Test mode runs with limited sampling.
+ntrials = 10000
+pop_size = 2000
+if test_mode:
+    ntrials = 100
+    pop_size = 40
 
 # Set up the main command lines
 backrub_args = [
@@ -172,8 +189,9 @@ backrub_args = [
         "-ex1", "-ex2", "-extrachi_cutoff", "0",
         "-out:prefix", output_prefix,
         "-mute", "core.io.pdb.file_data",
-        "-backrub:ntrials", "10000"
+        "-backrub:ntrials", str(ntrials)
 ]
+
 seqtol_args = [
     seqtol_bin,
     "-database", database_dir,
@@ -181,7 +199,7 @@ seqtol_args = [
     "-ex1", "-ex2", "-extrachi_cutoff", "0",
     "-seq_tol:fitness_master_weights"] + fitness_function_weights + [
     "-ms:generations", "5",
-    "-ms:pop_size", "2000",
+    "-ms:pop_size", str(pop_size),
     "-ms:pop_from_ss", "1",
     "-ms:checkpoint:prefix", output_prefix,
     "-ms:checkpoint:interval", "200",
@@ -207,25 +225,25 @@ else:
 backrub_resfile = os.path.join(input_path + "_backrub.resfile")
 if os.path.exists(backrub_resfile):
     backrub_args += ["-resfile", backrub_resfile]
-    print "Backrub Resfile:", backrub_resfile
+    print("Backrub Resfile: %s" % backrub_resfile)
 
 # Add minimize movemap to the command line if it exists
 minimize_movemap = os.path.join(input_path + "_minimize.movemap")
 if os.path.exists(minimize_movemap):
     backrub_args += ["-backrub:minimize_movemap", minimize_movemap]
-    print "Minimize Movemap:", minimize_movemap
+    print("Minimize Movemap: %s" % minimize_movemap)
 
 # Add perturb movemap to the command line if it exists
 perburb_movemap = os.path.join(input_path + "_perturb.movemap")
 if os.path.exists(perburb_movemap):
     backrub_args += ["-in:file:movemap", perburb_movemap, "-sm_prob", "0.1"]
-    print "Perturb Movemap:", perburb_movemap
+    print("Perturb Movemap: %s" % perburb_movemap)
 
 # Add resfile to command line if it exists
 seqtol_resfile = os.path.join(input_path + "_seqtol.resfile")
 if os.path.exists(seqtol_resfile):
     seqtol_args += ["-resfile", seqtol_resfile]
-    print "Sequence Tolerance Resfile:", seqtol_resfile
+    print("Sequence Tolerance Resfile: %s\n" % seqtol_resfile)
 
 
 # Normalize the command lines
@@ -235,7 +253,8 @@ seqtol_args = shlex.split(' '.join(seqtol_args))
 
 # Make the output directory and make it the working directory
 try:
-    os.makedirs(output_dir)
+    if not os.path.exists(output_dir):
+        os.makedirs(output_dir)
 except:
     if not os.path.exists(output_dir):
         print("The output directory %s could not be created." % output_dir)
@@ -246,30 +265,43 @@ os.chdir(output_dir)
 
 time_start = time.time()
 
-
 # Run the backrub app if it hasn't already been run
 if not (os.path.exists(output_prefix + "_low.pdb") or os.path.exists(output_prefix + "_low.pdb.gz")):
-    print " ".join(backrub_args)
+    print('* Running backrub *')
+    print('%s\n' % (" ".join(backrub_args)))
+
     outfile = open(output_prefix + "_backrub.out", "w", 0)
-    process = subprocess.Popen(backrub_args, stdout=outfile, stderr=subprocess.STDOUT, close_fds=True)
-    returncode = process.wait()
+    if settings.get('pipe_output_to_stdout'):
+        process = subprocess.Popen(backrub_args, stdout=subprocess.PIPE, stderr=subprocess.STDOUT, cwd=output_dir)
+        while process.poll() is None:
+            print process.stdout.readline().rstrip()
+        print(process.stdout.read())
+        returncode = process.returncode
+    else:
+        process = subprocess.Popen(backrub_args, stdout=outfile, stderr=subprocess.STDOUT, close_fds=True, cwd=output_dir)
+        returncode = process.wait()
     outfile.close()
 
     # Remove the "last" structure and rename the "low" structure"
-    os.remove(output_prefix + pdb_name + "_0001_last.pdb")
-    os.rename(output_prefix + pdb_name + "_0001_low.pdb", output_prefix + "_low.pdb")
+    try:
+        os.remove(output_prefix + pdb_name + "_0001_last.pdb")
+        os.rename(output_prefix + pdb_name + "_0001_low.pdb", output_prefix + "_low.pdb")
+    except:
+        print('An error occurred during the backrub simulation.')
+        sys.exit(1)
 else:
     print "Skipping backrub (already completed)."
 
 
-# Print backrub running time statistics
+# Print backrub running time
 time_backrub_end = time.time()
-print "Time (backrub):", datetime.timedelta(seconds = time_backrub_end - time_start)
+print("Time (backrub): %s\n" % str(datetime.timedelta(seconds = time_backrub_end - time_start)))
 
 
 # Run the sequence_tolerance app if the PDB file has not been compressed
 if os.path.exists(output_prefix + "_low.pdb"):
-    print " ".join(seqtol_args)
+    print('* Running sequence tolerance *')
+    print('%s\n' % (" ".join(seqtol_args)))
     sys.stdout.flush()
 
     seqtol_output_filename = output_prefix + "_seqtol.out"
@@ -279,8 +311,15 @@ if os.path.exists(output_prefix + "_low.pdb"):
         output_index += 1
         seqtol_output_filename = output_prefix + "_seqtol%i.out" % output_index
     outfile = open(seqtol_output_filename, "w", 0)
-    process = subprocess.Popen(seqtol_args, stdout=outfile, stderr=subprocess.STDOUT, close_fds=True)
-    returncode = process.wait()
+    if settings.get('pipe_output_to_stdout'):
+        process = subprocess.Popen(seqtol_args, stdout=subprocess.PIPE, stderr=subprocess.STDOUT, close_fds=True, cwd=output_dir)
+        while process.poll() is None:
+            print process.stdout.readline().rstrip()
+        print(process.stdout.read())
+        returncode = process.returncode
+    else:
+        process = subprocess.Popen(seqtol_args, stdout=outfile, stderr=subprocess.STDOUT, close_fds=True, cwd=output_dir)
+        returncode = process.wait()
     outfile.close()
 
     # Compress the output structure
@@ -289,10 +328,11 @@ if os.path.exists(output_prefix + "_low.pdb"):
 else:
     print "Skipping sequence_tolerance (Already Completed)"
 
-# Print running time statistics
+# Print sequence tolerance running time
 time_end = time.time()
 print "Time (seqtol):", datetime.timedelta(seconds = time_end - time_backrub_end)
 print "Seconds:", time_end - time_start
-print "Time:", datetime.timedelta(seconds = time_end - time_start)
-print "Summary:", socket.gethostname(), time_end - time_start, datetime.timedelta(seconds = time_end - time_start)
 
+print "\nTotal time:", datetime.timedelta(seconds = time_end - time_start)
+print "Summary:", socket.gethostname(), time_end - time_start, datetime.timedelta(seconds = time_end - time_start)
+print('')

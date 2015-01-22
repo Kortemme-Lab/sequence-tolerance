@@ -2,6 +2,7 @@
 
 # The original version of this script was created by Colin A. Smith
 # This script takes as input a PDB file and generates a resfile for use with the sequence_tolerance app.
+# The resfile will be colocated with the PDB file as expected by the backrub_seqtol.py script.
 
 import math
 import os
@@ -407,21 +408,8 @@ if __name__ == "__main__":
         elif resids[seqpos] in resids_repack:
             seqtol_resfile_lines.append(resfile_id + " NATAA\n")
 
-    output_dir = settings.get('output_dir')
-    if output_dir:
-        base_filename = os.path.splitext(os.path.split(pdb_path)[1])[0]
-        resfile_path = os.path.join(output_dir, "%s_seqtol.resfile" % base_filename)
-        try:
-            os.makedirs(output_dir)
-        except:
-            if not os.path.exists(output_dir):
-                print("The output directory %s could not be created." % output_dir)
-            else:
-                print("An error occurred while creating the output directory %s." % output_dir)
-            sys.exit(1)
-    else:
-        base_path = os.path.splitext(pdb_path)[0]
-        resfile_path = base_path + "_seqtol.resfile"
+    base_path = os.path.splitext(pdb_path)[0]
+    resfile_path = base_path + "_seqtol.resfile"
 
     seqtol_resfile = open(resfile_path, "w")
     seqtol_resfile.writelines(seqtol_resfile_lines)

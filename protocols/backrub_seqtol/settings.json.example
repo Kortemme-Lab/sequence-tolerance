@@ -5,4 +5,5 @@
     "use_PLOS_ONE_settings_with_modern_Rosetta" : false,
     "custom_fitness_function_weights" : null,
     "output_dir" : "../../output/backrub_seqtol",
+    "pipe_output_to_stdout" : false
 }
