@@ -5,8 +5,9 @@
 #$ -cwd
 #$ -r yes
 #$ -j y
+#$ -l mem_free=2G
 #$ -l h_rt=10:00:00
-#$ -l arch=lx24-amd64
+#$ -l arch=linux-x64
 
 # This script runs a backrub simulation followed by a sequence tolerance simulation on a single PDB structure.
 # The script is designed to run either on a typical workstation or as an SGE cluster submission script.
