@@ -34,7 +34,7 @@ Analysis
 --------------------------------------
 
 The analysis script generates four metrics which can be used to evaluate the results of the sequence tolerance simulations.
-The analysis scripts are described in more detail in :doc:`analysis/README.rst <analysis/README.rst>`.
+The analysis scripts are described in more detail in analysis/README.rst.
 
 --------------------------------------
 Protocol 1: Backrub/Sequence Tolerance
