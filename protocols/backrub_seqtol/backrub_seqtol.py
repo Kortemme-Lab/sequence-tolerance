@@ -50,7 +50,7 @@ def normalize_path(p):
     if os.path.isabs(p):
         return p
     else:
-        return os.path.normpath(os.path.join(get_script_location(), p))
+        return os.path.abspath(os.path.normpath(os.path.join(get_script_location(), p)))
 
 
 # Test mode does restricted sampling to test that the protocol is correctly set up
@@ -178,6 +178,8 @@ if settings.get('output_dir'):
     output_dir = normalize_path(settings['output_dir'])
 else:
     output_dir = os.path.join(os.getcwd(), "output", input_name)
+    output_dir = os.path.abspath(output_dir)
+
 output_prefix = input_name + "_%04i" % (iteration)
 
 # Print job summary information
