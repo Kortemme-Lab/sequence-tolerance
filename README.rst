@@ -2,13 +2,20 @@
 Sequence tolerance benchmark
 ====================================
 
-Sequence tolerance protocols predict the tolerated sequence space for a given protein-protein interface or protein domain. The benchmark currently contains one such protocol capture. Analysis is provided by an R script which creates a series of figures and a position weight matrix.
+Sequence tolerance protocols predict the tolerated sequence space for a given protein-protein interface or protein domain.
+The benchmark currently contains one such protocol capture. Analysis is provided by an R script which creates a series of
+figures and a position weight matrix.
+
+This protocol capture is based off the original captures from the Smith & Kortemme papers listed above however most of
+the output directories have been excluded here to reduce the size of the repository.
+
+The original output directories can be found in the `RosettaCommons repositories <https://github.com/RosettaCommons/demos/tree/master/protocol_capture/2010/backrub_seqtol>`_ or at http://kortemmelab.ucsf.edu/data/.
 
 -------------------------
 Downloading the benchmark
 -------------------------
 
-The benchmark is hosted on GitHub. A copy can be checked out using the `git <http://git-scm.com/>`_ command-line tool:
+The benchmark is hosted on GitHub. The most recent version can be checked out using the `git <http://git-scm.com/>`_ command-line tool:
 
 ::
 
@@ -36,13 +43,13 @@ Analysis
 The analysis script generates four metrics which can be used to evaluate the results of the sequence tolerance simulations.
 The analysis scripts are described in more detail in analysis/README.rst.
 
---------------------------------------
+======================================
 Protocol 1: Backrub/Sequence Tolerance
---------------------------------------
+======================================
 
-~~~~~~~~~~~~~~~~~~~
+-------------------
 General Information
-~~~~~~~~~~~~~~~~~~~
+-------------------
 
 Created by: Colin A. Smith [1]_
 
@@ -50,18 +57,18 @@ Software suite: Rosetta
 
 Protocol directory: backrub_seqtol
 
-~~~~~~~~~~~~~~~~~
+-------------------
 Description
-~~~~~~~~~~~~~~~~~
+-------------------
 
 This method first generates an ensemble of backbone structures by running backrub simulations on an input structure. For
 each member of the ensemble, a large number of sequences are scored and then Boltzmann weighted to generate a position
 weight matrix for the specified sequence positions. Interactions within and between different parts of the structure can
 be individually reweighted, depending on the desired objective.
 
-~~~~~~~~~~~~
+-------------------
 Instructions
-~~~~~~~~~~~~
+-------------------
 
 To run this protocol, the backrub application is used to generate an ensemble of structures. Next, the sequence tolerance
 application is used to sample a large number of sequence for each member of the ensemble. A python script is included which
@@ -70,9 +77,9 @@ few paths which must be customized to run correctly on a user's system. Please n
 suggested to get acceptable output. The more backbone structures that are generated, the less prone the results will be
 to stochastic fluctuations.
 
-~~~~~~~~~~~~~~~~~~~~~~~~
+------------------------
 Protocol capture scripts
-~~~~~~~~~~~~~~~~~~~~~~~~
+------------------------
 
 The protocols/backrub_seqtol/backrub_seqtol.py script is provided to help with running the protocol. It has been modified
 slightly from Colin Smith's original version to try to accommodate changes in the Rosetta command-line flags and default
@@ -84,9 +91,9 @@ The purpose of the scripts are to allow the user to use the best general setting
 below describing the command line flags.
 
 
-~~~~~~~~~~~~
+-------------------
 Common Flags
-~~~~~~~~~~~~
+-------------------
 
 _____________
 General flags
@@ -141,9 +148,9 @@ ________________________
 +-----------------------------------------------+------------------------------------------------------------------------------+
 
 
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+----------------------
 Example command lines
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+----------------------
 
 ____________
 Backrub step
@@ -201,31 +208,24 @@ Rosetta, 2013-08-11 onwards
   -out:prefix 1N7T_01_0001 -resfile input/backrub_seqtol/1N7T_seqtol.resfile
 
 
-~~~~~~~~~~~~~~~~~~~~~~~~
+----------------------------
 Supporting tool versions
-~~~~~~~~~~~~~~~~~~~~~~~~
+----------------------------
 
 This protocol capture has been tested with:
 
 - Python 2.4.3 and R 2.12.1
 - Python 2.7.8 and R 3.1.1
 
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+-------------------------------------------------
 References to published works using this protocol
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+-------------------------------------------------
 
 Smith, CA, Kortemme, T. Structure-Based Prediction of the Peptide Sequence Space Recognized by Natural and Synthetic PDZ Domains. 2010. J Mol Biol 402(2):460-74. `doi: 10.1016/j.jmb.2010.07.032 <http://dx.doi.org/10.1016/j.jmb.2010.07.032>`_.
 
-Smith, CA, Kortemme, T. Predicting the Tolerated Sequences for Proteins and Protein Interfaces Using RosettaBackrub Flexible Backbone Design. 2011.
+Smith, CA, Kortemme, T. Predicting the Tolerated Sequences for Proteins and Protein Interfaces Using RosettaBackrub
+Flexible Backbone Design. 2011.
 PLoS ONE 6(7):e20451. `doi: 10.1371/journal.pone.0020451 <http://dx.doi.org/10.1371/journal.pone.0020451>`_.
-
-~~~~~
-Notes
-~~~~~
-
-This protocol capture is based off the original captures from the Smith & Kortemme papers listed above however most of the output directories have been excluded here to reduce the size of the repository.
-
-The original output directories can be found in the `RosettaCommons repositories <https://github.com/RosettaCommons/demos/tree/master/protocol_capture/2010/backrub_seqtol>`_ or at http://kortemmelab.ucsf.edu/data/.
 
 
 .. [1] The original version of this protocol capture was developed and tested for Rosetta 3.2. Any errors in the current version above are likely to be our fault rather than that of the original author. Please contact support@kortemmelab.ucsf.edu with any issues which may arise.
