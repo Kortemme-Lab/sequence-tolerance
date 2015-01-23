@@ -30,6 +30,29 @@ print("\nPython: %s" % sys.version)
 print("Host: %s" % socket.gethostname())
 
 
+def get_script_location():
+    '''Returns the filepath of this Python script.'''
+    if os.environ.get('SGE_ROOT') and os.environ.get('JOB_ID'):
+        if not os.environ.get('BENCHMARK_PATH'):
+            raise Exception('The BENCHMARK_PATH variable must be set when submitting this job to an SGE cluster e.g. "qsub -v BENCHMARK_PATH=/path/to/benchmark_captures/sequence-tolerance ..."')
+        else:
+            benchmark_root = os.environ['BENCHMARK_PATH']
+            script_dir = os.path.join(benchmark_root, 'protocols', 'backrub_seqtol')
+            if not os.path.exists(script_dir):
+                raise Exception('The directory %s was not found - please ensure that you have set the BENCHMARK_PATH variable correctly.' % script_dir)
+    else:
+        script_dir = os.path.dirname(os.path.realpath(__file__)) # note - this will fail under certain circumstances depending on how this script is called
+    return script_dir
+
+
+def normalize_path(p):
+    '''If p is an absolute path, return p. Otherwise, return a path relative to the script location.'''
+    if os.path.isabs(p):
+        return p
+    else:
+        return os.path.normpath(os.path.join(get_script_location(), p))
+
+
 # Test mode does restricted sampling to test that the protocol is correctly set up
 test_mode = False
 script_arguments = [a for a in sys.argv]
@@ -39,22 +62,20 @@ script_arguments = [a for a in script_arguments if a != 'test_mode']
 
 
 # Users should change settings.json to match their local environment
-this_dir = os.path.dirname(os.path.realpath(__file__)) # note - this will fail under certain circumstances depending on how this script is called
-settings_file = os.path.join(this_dir, 'settings.json')
+settings_file = normalize_path('settings.json')
 if not os.path.exists(settings_file):
-    print('Please create the configuration file settings.json.')
+    raise Exception('Please create the configuration file %s.' % settings_file)
 settings = json.loads(open(settings_file).read())
 
 
-
 # Weights file. This was used for the version of the protocol in the publications but should be omitted when used with versions of Rosetta after version 55611 (2013-08-11).
-no_hb_env_dep_weights_file = os.path.join(this_dir, '..', '..', 'input', 'backrub_seqtol', "standard_NO_HB_ENV_DEP.wts")
+no_hb_env_dep_weights_file = normalize_path(os.path.join('..', '..', 'input', 'backrub_seqtol', "standard_NO_HB_ENV_DEP.wts"))
 assert(os.path.exists(no_hb_env_dep_weights_file))
 
 
 # Configure the Rosetta binaries
 backrub_bin, seqtol_bin, database_dir = None, None, None
-rosetta_installation_path = settings['rosetta_installation_path']
+rosetta_installation_path = normalize_path(settings['rosetta_installation_path'])
 assert(os.path.exists(rosetta_installation_path))
 if settings.get('use_Rosetta_3.2_or_previous'):
     backrub_bin = os.path.join(rosetta_installation_path, "rosetta_source/bin/backrub.linuxgccrelease")
@@ -91,6 +112,7 @@ if settings.get('use_PLOS_ONE_settings_with_modern_Rosetta'):
 
 # Determine the starting PDB structure from either the PDB_PATH environment
 # variable, or the first command line argument
+# Note: we do/should not normalize the path relative to the script here.
 if os.environ.has_key("PDB_PATH"):
     pdb_path = os.path.abspath(os.environ["PDB_PATH"])
 elif len(script_arguments) >= 2:
@@ -153,7 +175,7 @@ elif len(script_arguments) >= 4:
 pdb_name = os.path.split(os.path.splitext(pdb_path)[0])[-1]
 input_name = os.path.split(input_path)[-1]
 if settings.get('output_dir'):
-    output_dir = settings['output_dir']
+    output_dir = normalize_path(settings['output_dir'])
 else:
     output_dir = os.path.join(os.getcwd(), "output", input_name)
 output_prefix = input_name + "_%04i" % (iteration)
