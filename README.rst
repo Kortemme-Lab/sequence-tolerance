@@ -70,6 +70,9 @@ be individually reweighted, depending on the desired objective.
 Instructions
 -------------------
 
+This protocol uses two Rosetta applications - `backrub <https://www.rosettacommons.org/docs/latest/backrub.html>`_ and
+`sequence_tolerance <https://www.rosettacommons.org/docs/latest/sequence-tolerance.html>`_.
+
 To run this protocol, the backrub application is used to generate an ensemble of structures. Next, the sequence tolerance
 application is used to sample a large number of sequence for each member of the ensemble. A python script is included which
 handles generation of single ensemble member using backrub and sequence scoring using sequence_tolerance. It includes a
@@ -152,9 +155,37 @@ ________________________
 Example command lines
 ----------------------
 
+____________________
+Paths and extensions
+____________________
+
+The command lines below use placeholders for paths and extensons. Please change these appropriately *e.g.*:
+
+::
+
+  ROSETTA_BASE=<path/to/rosetta>
+  EXTENSION=linuxgccrelease
+  WORKING_DIRECTORY=.
+  BENCHMARK_PATH=<path/to/sequence-tolerance>
+
+Note that the extension will change depending on what options were used to build Rosetta and on the architecture of the
+machine used for the build.
+
 ____________
 Backrub step
 ____________
+
+This step in the protocol generates a Backrub ensemble for each prototypical conformation.
+
+Typical runtime: 3-5 minutes per structure.
+
+Files generated:
+
+::
+
+  ${WORKING_DIRECTORY}/1N7T_01_0001.pdb
+  ${WORKING_DIRECTORY}/1N7T_01_0001_low.pdb
+  ${WORKING_DIRECTORY}/1N7T_01_0001score.sc
 
 ''''''''''''
 Rosetta 3.2
@@ -162,9 +193,9 @@ Rosetta 3.2
 
 ::
 
-  rosetta-3.2/rosetta_source/bin/backrub.linuxgccrelease -database rosetta-3.2/rosetta_database
-  -s input/pdbs/1N7T_01.pdb -ex1 -ex2 -extrachi_cutoff 0 -mute core.io.pdb.file_data
-  -backrub:ntrials 10000 -score:weights input/backrub_seqtol/rosetta3.2/standard_NO_HB_ENV_DEP.wts
+  ${ROSETTA_BASE}/rosetta_source/bin/backrub.${EXTENSION} -database ${ROSETTA_BASE}/rosetta_database \
+  -s ${BENCHMARK_PATH}/pdbs/1N7T_01.pdb -ex1 -ex2 -extrachi_cutoff 0 -mute core.io.pdb.file_data \
+  -backrub:ntrials 10000 -score:weights ${BENCHMARK_PATH}/backrub_seqtol/rosetta3.2/standard_NO_HB_ENV_DEP.wts \
   -score:patch score12
 
 
@@ -174,13 +205,28 @@ Rosetta, 2013-08-11 onwards [2]_
 
 ::
 
-  rosetta/source/bin/backrub.linuxgccrelease -database rosetta/database
-  -s input/pdbs/1N7T_01.pdb -ex1 -ex2 -extrachi_cutoff 0 -mute core.io.pdb.file_data
+  ${ROSETTA_BASE}/source/bin/backrub.${EXTENSION} -database ${ROSETTA_BASE}/database \
+  -s ${BENCHMARK_PATH}/pdbs/1N7T_01.pdb -ex1 -ex2 -extrachi_cutoff 0 -mute core.io.pdb.file_data \
   -backrub:ntrials 10000
 
 _______________________
 Sequence tolerance step
 _______________________
+
+
+The sequence tolerance protocol is used for specificity prediction and library design. Given an input structure, the
+application uses user-defined inter- and intra-molecular weights to determine the scores of a large number of sequences. In the
+context of the backrub_seqtol protocol, this input structure is a structure created by the backrub step. The default values for
+the weights have been shown to perform well for the structures considered in the references below.
+
+Typical runtime: 20 minutes per structure.
+
+Files generated:
+
+::
+
+  ${WORKING_DIRECTORY}/1N7T_01_0001.ga.entities.gz
+  ${WORKING_DIRECTORY}/1N7T_001.ga.generations.gz
 
 ''''''''''''
 Rosetta 3.2
@@ -188,12 +234,12 @@ Rosetta 3.2
 
 ::
 
-  rosetta-3.2/rosetta_source/bin/sequence_tolerance.linuxgccrelease -database rosetta-3.2/rosetta_database
-  -s input/pdbs/1N7T_01_0001_low.pdb.gz -ex1 -ex2 -extrachi_cutoff 0 -score:ref_offsets HIS 1.2
-  -seq_tol:fitness_master_weights 1 1 1 2 -ms:generations 5 -ms:pop_size 2000 -ms:pop_from_ss 1
-  -ms:checkpoint:prefix 1N7T_01_0001 -ms:checkpoint:interval 200 -ms:checkpoint:gz
-  -score:weights input/backrub_seqtol/rosetta3.2/standard_NO_HB_ENV_DEP.wts -out:prefix 1N7T_01_0001
-  -score:patch score12 -resfile input/backrub_seqtol/1N7T_seqtol.resfile
+  ${ROSETTA_BASE}/rosetta_source/bin/sequence_tolerance.${EXTENSION} -database ${ROSETTA_BASE}/rosetta_database \
+  -s ${WORKING_DIRECTORY}/pdbs/1N7T_01_0001_low.pdb -ex1 -ex2 -extrachi_cutoff 0 -score:ref_offsets HIS 1.2 \
+  -seq_tol:fitness_master_weights 1 1 1 2 -ms:generations 5 -ms:pop_size 2000 -ms:pop_from_ss 1 \
+  -ms:checkpoint:prefix 1N7T_01_0001 -ms:checkpoint:interval 200 -ms:checkpoint:gz \
+  -score:weights ${BENCHMARK_PATH}/backrub_seqtol/rosetta3.2/standard_NO_HB_ENV_DEP.wts -out:prefix 1N7T_01_0001 \
+  -score:patch score12 -resfile ${BENCHMARK_PATH}/backrub_seqtol/1N7T_seqtol.resfile
 
 '''''''''''''''''''''''''''
 Rosetta, 2013-08-11 onwards
@@ -201,12 +247,17 @@ Rosetta, 2013-08-11 onwards
 
 ::
 
-  rosetta/source/bin/sequence_tolerance.linuxgccrelease -database rosetta/database
-  -s input/pdbs/1N7T_01_0001_low.pdb.gz -ex1 -ex2 -extrachi_cutoff 0 -ex1aro -ex2aro
-  -seq_tol:fitness_master_weights 1 1 1 2 -ms:generations 5 -ms:pop_size 2000 -ms:pop_from_ss 1
-  -ms:checkpoint:prefix 1N7T_01_0001 -ms:checkpoint:interval 200 -ms:checkpoint:gz
-  -out:prefix 1N7T_01_0001 -resfile input/backrub_seqtol/1N7T_seqtol.resfile
+  ${ROSETTA_BASE}/source/bin/sequence_tolerance.${EXTENSION} -database ${ROSETTA_BASE}/database \
+  -s ${WORKING_DIRECTORY}/pdbs/1N7T_01_0001_low.pdb -ex1 -ex2 -extrachi_cutoff 0 -ex1aro -ex2aro \
+  -seq_tol:fitness_master_weights 1 1 1 2 -ms:generations 5 -ms:pop_size 2000 -ms:pop_from_ss 1 \
+  -ms:checkpoint:prefix 1N7T_01_0001 -ms:checkpoint:interval 200 -ms:checkpoint:gz \
+  -out:prefix 1N7T_01_0001 -resfile ${BENCHMARK_PATH}/backrub_seqtol/1N7T_seqtol.resfile
 
+_____________
+Analysis Step
+_____________
+
+Run analysis as described in analysis/README.rst
 
 ----------------------------
 Supporting tool versions
