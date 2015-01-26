@@ -95,7 +95,7 @@ Command line options
 
 The backrub_seqtol.py script takes the following options which can be specified either directly on the command line or via environment variables (but not currently both):
  - pdb_path (PDB_PATH environment variable). Required option. This specifies the input PDB structure;
- - iteration (SGE_TASK_ID environment variable). Optional, defaults to 1. The script should be run multiple times (*e.g.* 20) to create enough data for analysis. This option should be a unique integer specificying the run number (*e.g.* an integer between 1 and 20);
+ - iteration (SGE_TASK_ID environment variable). Optional, defaults to 1. The script should be run multiple times (*e.g.* 20) to create enough data for analysis. This option should be a unique integer specifying the run number (*e.g.* an integer between 1 and 20);
  - input_path (INPUT_PATH environment variable). Optional, defaults to the directory containing pdb_path;
  - "test_mode". Optional. This sets test parameters in the script to test whether the benchmark is configured correctly. See above for more details.
 
