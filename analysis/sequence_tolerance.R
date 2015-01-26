@@ -671,7 +671,7 @@ plot_seq_contrib <- function(entitieslist,
 process_seqtol <- function(dirpath = ".", fitness_coef = c(1/2.5, 1/2.5, 1/2.5, 1),
                            temp_or_thresh = 0.228, 
                            type = c("boltzmann", "cutoff"),
-                           percentile = .5, prefix = "seqtol",
+                           percentile = .5, prefix = "specificity",
                            plotgen = FALSE, plotseq = TRUE) {
 
 	type <- match.arg(type)
@@ -772,21 +772,3 @@ process_seqtol <- function(dirpath = ".", fitness_coef = c(1/2.5, 1/2.5, 1/2.5, 
 		dev.off()
 	}
 }
-
-# This function is the main data processing procedure. It takes a directory 
-# path which contains *.ga.entities files. It reads all those files and
-# produces a set of boxplots in several different file formats. It also 
-# generates a position weight matrix and FASTA file for producing a sequence 
-# logo.
-# THIS IS DEPRECATED AND WILL BE REMOVED IN THE FUTURE
-
-process_specificity <- function(dirpath = ".", fitness_coef = c(1/2.5, 1/2.5, 1/2.5, 1),
-                                temp_or_thresh = 0.228, 
-                                type = c("boltzmann", "cutoff"),
-                                percentile = .5) {
-
-	warning("process_specificity is deprecated, please switch to process_seqtol")
-
-	process_seqtol(dirpath, fitness_coef, temp_or_thresh, type, percentile, "specificity")
-}
-
