@@ -85,7 +85,7 @@ The command above uses the default values for process_seqtol. These can be overr
  - plotgen (TRUE or FALSE (default)). If set to TRUE then a a plot similar to Figure 5 in the 2011 ([2]_) manuscript will be produced;
  - plotseq (TRUE (default) or FALSE). If set to TRUE then a sequence contribution plot is generated.
 
-See the `Rosetta documentation <https://www.rosettacommons.org/docs/latest/sequence-tolerance.html>` or \[\ 1_\] for more
+See the `Rosetta documentation <https://www.rosettacommons.org/docs/latest/sequence-tolerance.html>`_ or \[\ 1_\] for more
 details. For example, the process_seqtol call above uses the default values and is equivalent to:
 
 ::
