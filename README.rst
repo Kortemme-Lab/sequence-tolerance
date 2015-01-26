@@ -175,6 +175,7 @@ The command lines below use placeholders for paths and extensons. Please change 
   EXTENSION=linuxgccrelease
   WORKING_DIRECTORY=.
   BENCHMARK_PATH=<path/to/sequence-tolerance>
+  # edit protocols/backrub_seqtol/settings.json to set some options
 
 Note that the extension will change depending on what options were used to build Rosetta and on the architecture of the
 machine used for the build.
@@ -202,8 +203,8 @@ Rosetta 3.2
 ::
 
   ${ROSETTA_BASE}/rosetta_source/bin/backrub.${EXTENSION} -database ${ROSETTA_BASE}/rosetta_database \
-  -s ${BENCHMARK_PATH}/pdbs/1N7T_01.pdb -ex1 -ex2 -extrachi_cutoff 0 -mute core.io.pdb.file_data \
-  -backrub:ntrials 10000 -score:weights ${BENCHMARK_PATH}/backrub_seqtol/rosetta3.2/standard_NO_HB_ENV_DEP.wts \
+  -s ${BENCHMARK_PATH}/input/pdbs/1N7T_01.pdb -ex1 -ex2 -extrachi_cutoff 0 -mute core.io.pdb.file_data \
+  -backrub:ntrials 10000 -score:weights ${BENCHMARK_PATH}/input/backrub_seqtol/rosetta3.2/standard_NO_HB_ENV_DEP.wts \
   -score:patch score12
 
 
@@ -214,7 +215,7 @@ Rosetta, 2013-08-11 onwards [2]_
 ::
 
   ${ROSETTA_BASE}/source/bin/backrub.${EXTENSION} -database ${ROSETTA_BASE}/database \
-  -s ${BENCHMARK_PATH}/pdbs/1N7T_01.pdb -ex1 -ex2 -extrachi_cutoff 0 -mute core.io.pdb.file_data \
+  -s ${BENCHMARK_PATH}/input/pdbs/1N7T_01.pdb -ex1 -ex2 -extrachi_cutoff 0 -mute core.io.pdb.file_data \
   -backrub:ntrials 10000
 
 _______________________
@@ -246,8 +247,8 @@ Rosetta 3.2
   -s ${WORKING_DIRECTORY}/pdbs/1N7T_01_0001_low.pdb -ex1 -ex2 -extrachi_cutoff 0 -score:ref_offsets HIS 1.2 \
   -seq_tol:fitness_master_weights 1 1 1 2 -ms:generations 5 -ms:pop_size 2000 -ms:pop_from_ss 1 \
   -ms:checkpoint:prefix 1N7T_01_0001 -ms:checkpoint:interval 200 -ms:checkpoint:gz \
-  -score:weights ${BENCHMARK_PATH}/backrub_seqtol/rosetta3.2/standard_NO_HB_ENV_DEP.wts -out:prefix 1N7T_01_0001 \
-  -score:patch score12 -resfile ${BENCHMARK_PATH}/backrub_seqtol/1N7T_seqtol.resfile
+  -score:weights ${BENCHMARK_PATH}/input/backrub_seqtol/rosetta3.2/standard_NO_HB_ENV_DEP.wts -out:prefix 1N7T_01_0001 \
+  -score:patch score12 -resfile ${BENCHMARK_PATH}/input/backrub_seqtol/1N7T_seqtol.resfile
 
 '''''''''''''''''''''''''''
 Rosetta, 2013-08-11 onwards
@@ -259,7 +260,7 @@ Rosetta, 2013-08-11 onwards
   -s ${WORKING_DIRECTORY}/pdbs/1N7T_01_0001_low.pdb -ex1 -ex2 -extrachi_cutoff 0 -ex1aro -ex2aro \
   -seq_tol:fitness_master_weights 1 1 1 2 -ms:generations 5 -ms:pop_size 2000 -ms:pop_from_ss 1 \
   -ms:checkpoint:prefix 1N7T_01_0001 -ms:checkpoint:interval 200 -ms:checkpoint:gz \
-  -out:prefix 1N7T_01_0001 -resfile ${BENCHMARK_PATH}/backrub_seqtol/1N7T_seqtol.resfile
+  -out:prefix 1N7T_01_0001 -resfile ${BENCHMARK_PATH}/input/backrub_seqtol/1N7T_seqtol.resfile
 
 _____________
 Analysis Step
