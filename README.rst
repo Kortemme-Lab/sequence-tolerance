@@ -3,13 +3,21 @@ Sequence tolerance benchmark
 ====================================
 
 Sequence tolerance protocols predict the tolerated sequence space for a given protein-protein interface or protein domain.
-The benchmark currently contains one such protocol capture. Analysis is provided by an R script which creates a series of
-figures and a position weight matrix.
+This sequence tolerance benchmark measures the recapitulation of a reference distribution over a sequence space given the
+conformation of a prototypical sequence.
+
+This benchmark includes:
+- phage display data that describe the peptide recognition preferences for: i) 169 naturally occurring and engineered
+PDZ domain-peptide complexes; ii) the human growth hormone-human growth hormone receptor (hGH-hGHR) interface; and iii)
+the 6 core and boundary residues in GB1.
+- configuration details for the backrub ensemble protocol described in Smith & Kortemme (2010) and Smith & Kortemme (2011);
+- analysis scripts that compare a predicted multiple sequence alignment to a reference multiple sequence alignment using
+four recapitulation metrics each based on the position weight matrix estimated for the ensemble.
 
 This protocol capture is based off the original captures from the Smith & Kortemme papers listed above however most of
-the output directories have been excluded here to reduce the size of the repository.
-
-The original output directories can be found in the `RosettaCommons repositories <https://github.com/RosettaCommons/demos/tree/master/protocol_capture/2010/backrub_seqtol>`_ or at http://kortemmelab.ucsf.edu/data/.
+the output directories have been excluded here to reduce the size of the repository. The full output of a successful run
+can be found in the `RosettaCommons repositories <https://github.com/RosettaCommons/demos/tree/master/protocol_capture/2010/backrub_seqtol>`_ and
+at http://kortemmelab.ucsf.edu/data/.
 
 -------------------------
 Downloading the benchmark
@@ -257,7 +265,7 @@ _____________
 Analysis Step
 _____________
 
-Run analysis as described in analysis/README.rst
+Once the sequence tolerance step is completed, the analysis can be run as described in analysis/README.rst
 
 ----------------------------
 Supporting tool versions
