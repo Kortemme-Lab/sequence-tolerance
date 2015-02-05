@@ -60,9 +60,10 @@ Configuration
 
 The file protocols/backrub_seqtol/settings.json should be created and configured according to the user's system. An
 example configuration file in provided in protocols/backrub_seqtol/settings.json.example. Most users will only need to
-configure the *rosetta_installation_path* and *output_dir* settings which provide the location of the Rosetta installation
-and the output directory respectively. The remaining settings are present in case the user
-wishes to run Rosetta using settings similar to those used in the original publications.
+configure the *rosetta_installation_path*, *rosetta_binary_extension* [2]_, and *output_dir* settings which provide the
+location of the Rosetta installation, the suffix of the application binaries, and the output directory respectively.
+The remaining settings are present in case the user wishes to run Rosetta using settings similar to those used in the
+original publications.
 
 The location of the Rosetta installation should be the directory which contains the checkout of the Rosetta repository
 *i.e.* the directory containing:
@@ -198,10 +199,11 @@ protocol capture can be found in input/backrub_seqtol.
 How to run the full benchmark
 =============================
 
-These commands create data for the different benchmark cases. Fr test runs, add the argument "test_mode" to each line.
+These commands create data for the different benchmark cases. For test runs, add the argument "test_mode" to each line.
 
-
+----------------------------
 GB1 Fold Stability Tolerance
+----------------------------
 
 ::
 
@@ -209,13 +211,23 @@ GB1 Fold Stability Tolerance
   ...
   ${BENCHMARK_PATH}/protocols/backrub_seqtol/backrub_seqtol.py ${BENCHMARK_PATH}/input/pdbs/2QMT/2QMT.pdb 50 ${BENCHMARK_PATH}/input/backrub_seqtol/2QMT
 
+------------------------------
 PDZ Domain Interface Tolerance
+------------------------------
 
 ::
 
   ${BENCHMARK_PATH}/protocols/backrub_seqtol/backrub_seqtol.py ${BENCHMARK_PATH}/input/pdbs/2I0L_A_C_V2006/2I0L_A_C_V2006.pdb 1 ${BENCHMARK_PATH}/input/backrub_seqtol/2I0L_A_C_V2006
   ...
   ${BENCHMARK_PATH}/protocols/backrub_seqtol/backrub_seqtol.py ${BENCHMARK_PATH}/input/pdbs/2I0L_A_C_V2006/2I0L_A_C_V2006.pdb 50 ${BENCHMARK_PATH}/input/backrub_seqtol/2I0L_A_C_V2006
+
+  ${BENCHMARK_PATH}/protocols/backrub_seqtol/backrub_seqtol.py ${BENCHMARK_PATH}/input/pdbs/2IWP_B_A_V1927/2IWP_B_A_V1927.pdb 1 ${BENCHMARK_PATH}/input/backrub_seqtol/2IWP_B_A_V1927
+  ...
+  ${BENCHMARK_PATH}/protocols/backrub_seqtol/backrub_seqtol.py ${BENCHMARK_PATH}/input/pdbs/2IWP_B_A_V1927/2IWP_B_A_V1927.pdb 50 ${BENCHMARK_PATH}/input/backrub_seqtol/2IWP_B_A_V1927
+
+  ${BENCHMARK_PATH}/protocols/backrub_seqtol/backrub_seqtol.py ${BENCHMARK_PATH}/input/pdbs/2FNE_A_C_V2048/2FNE_A_C_V2048.pdb 1 ${BENCHMARK_PATH}/input/backrub_seqtol/2FNE_A_C_V2048
+  ...
+  ${BENCHMARK_PATH}/protocols/backrub_seqtol/backrub_seqtol.py ${BENCHMARK_PATH}/input/pdbs/2FNE_A_C_V2048/2FNE_A_C_V2048.pdb 50 ${BENCHMARK_PATH}/input/backrub_seqtol/2FNE_A_C_V2048
 
   ${BENCHMARK_PATH}/protocols/backrub_seqtol/backrub_seqtol.py ${BENCHMARK_PATH}/input/pdbs/1N7T/1N7T_%02i.pdb 1 ${BENCHMARK_PATH}/input/backrub_seqtol/1N7T
   ...
@@ -225,7 +237,9 @@ PDZ Domain Interface Tolerance
   ...
   ${BENCHMARK_PATH}/protocols/backrub_seqtol/backrub_seqtol.py ${BENCHMARK_PATH}/input/pdbs/1N7T/1N7T_%02i.pdb 50 ${BENCHMARK_PATH}/input/backrub_seqtol/1N7T_V83K
 
+----------------------------
 hGH/hGHR Interface Tolerance
+----------------------------
 
 ::
 
@@ -430,7 +444,7 @@ Rosetta 3.2
 
 
 ''''''''''''''''''''''''''''''''
-Rosetta, 2013-08-11 onwards [2]_
+Rosetta, 2013-08-11 onwards [3]_
 ''''''''''''''''''''''''''''''''
 
 ::
@@ -499,7 +513,9 @@ PLoS ONE 6(7):e20451. `doi: 10.1371/journal.pone.0020451 <http://dx.doi.org/10.1
 
 .. [1] The original version of this protocol capture was developed and tested for Rosetta 3.2. Any errors in the current version above are likely to be our fault rather than that of the original author. Please contact support@kortemmelab.ucsf.edu with any issues which may arise.
 
-.. [2] The default Rosetta score function switched to Talaris 2013, making some previous flags redundant.
+.. [2] By default, a Linux release build of Rosetta built with GCC will append the suffix '.linuxgccrelease' to binaries *e.g.* backrub.linuxgccrelease is the binary for the backrub application.
+
+.. [3] The default Rosetta score function switched to Talaris 2013, making some previous flags redundant.
 
 .. |khgr| unicode:: U+003C7 .. GREEK SMALL LETTER CHI
 .. |chi| replace:: |khgr|\

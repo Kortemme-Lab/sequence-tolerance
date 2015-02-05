@@ -78,14 +78,15 @@ assert(os.path.exists(no_hb_env_dep_weights_file))
 # Configure the Rosetta binaries
 backrub_bin, seqtol_bin, database_dir = None, None, None
 rosetta_installation_path = normalize_path(settings['rosetta_installation_path'])
+rosetta_binary_extension = settings['rosetta_binary_extension']
 assert(os.path.exists(rosetta_installation_path))
 if settings.get('use_Rosetta_3.2_or_previous'):
-    backrub_bin = os.path.join(rosetta_installation_path, "rosetta_source/bin/backrub.linuxgccrelease")
-    seqtol_bin = os.path.join(rosetta_installation_path, "rosetta_source/bin/sequence_tolerance.linuxgccrelease")
+    backrub_bin = os.path.join(rosetta_installation_path, "rosetta_source/bin/backrub%s" % rosetta_binary_extension)
+    seqtol_bin = os.path.join(rosetta_installation_path, "rosetta_source/bin/sequence_tolerance%s" % rosetta_binary_extension)
     database_dir = os.path.join(rosetta_installation_path, "rosetta_database")
 else:
-    backrub_bin = os.path.join(rosetta_installation_path, "source/bin/backrub.linuxgccrelease")
-    seqtol_bin = os.path.join(rosetta_installation_path, "source/bin/sequence_tolerance.linuxgccrelease")
+    backrub_bin = os.path.join(rosetta_installation_path, "source/bin/backrub%s" % rosetta_binary_extension)
+    seqtol_bin = os.path.join(rosetta_installation_path, "source/bin/sequence_tolerance%s" % rosetta_binary_extension)
     database_dir = os.path.join(rosetta_installation_path, "database")
 
 
