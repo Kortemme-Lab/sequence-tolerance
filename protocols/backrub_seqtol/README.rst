@@ -201,7 +201,12 @@ protocol capture can be found in input/backrub_seqtol.
 How to run the full benchmark
 =============================
 
-These commands create data for the different benchmark cases. For test runs, add the argument "test_mode" to each line.
+These commands create data for the different benchmark cases. For test runs, add the argument "test_mode" to each line. For
+brevity, we have only included the first and last command lines for each case (assuming an ensemble of 50 members).
+
+The computation is highly parallelizable so we recommend that the benchmark be run either on a cluster or a machine with
+a large number of cores. The commands below should work in general. Instructions for running the benchmark on a Sun Grid
+Engine cluster are given in hpc/sge/backrub_seqtol/README.rst.
 
 ----------------------------
 GB1 Fold Stability Tolerance
