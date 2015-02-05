@@ -41,7 +41,7 @@ Directories in this archive
 
 This archive contains the following directories:
 
-- *data* : contains some data from the Smith and Kortemme 2010 publication about the input structures and proteins.
+- *data* : contains experimental phage display data compiled from the Smith and Kortemme 2010 publication. This is used to generate the benchmark analysis;
 - *input* : contains the input files for the benchmark. Input files specific to a particular protocol are in a subdirectory named after the protocol. The input files are described in more detail in input/README.rst.
 - *output* : these directories are empty by default. This is the default output location for protocols if they are run on the local machine.
 - *output/sample* : contains sample output data that can be used to test the sequence_tolerance.R analysis script.
