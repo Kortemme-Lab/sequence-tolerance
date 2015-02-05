@@ -100,13 +100,13 @@ Navigate to the directory with the output data from the run and then execute the
 
 The process_seqtol function call above uses a set of default values. These can be overridden and are, in order:
 
- - the path to the input;
- - the fitness function weights (inter- and intra-molecular weights);
- - the Boltzmann temperature / sequence cutoff;
- - the type of sequence weighting ("boltzmann" or "cutoff");
- - the percentile cutoff for merging position weight matrices from different backbone structures;
- - plotgen (TRUE or FALSE (default)). If set to TRUE then a a plot similar to Figure 5 in the 2011 ([2]_) manuscript will be produced;
- - plotseq (TRUE (default) or FALSE). If set to TRUE then a sequence contribution plot is generated.
+- the path to the input;
+- the fitness function weights (inter- and intra-molecular weights);
+- the Boltzmann temperature / sequence cutoff;
+- the type of sequence weighting ("boltzmann" or "cutoff");
+- the percentile cutoff for merging position weight matrices from different backbone structures;
+- plotgen (TRUE or FALSE (default)). If set to TRUE then a a plot similar to Figure 5 in the 2011 ([2]_) manuscript will be produced;
+- plotseq (TRUE (default) or FALSE). If set to TRUE then a sequence contribution plot is generated.
 
 See the `Rosetta documentation <https://www.rosettacommons.org/docs/latest/sequence-tolerance.html>`_ or \[\ 1_\] for more
 details. For example, the process_seqtol call above uses the default values and is equivalent to:
@@ -121,10 +121,10 @@ Input files
 
 The script expects the following files in the format used by the Rosetta sequence tolerance application:
 
- - 1N7T_{ITERATION}.ga.entities.gz;
- - 1N7T_{ITERATION}.ga.generations.gz;
- - 1N7T_{ITERATION}_seqtol.out;
- - the input PDB to the sequence tolerance step (read from *e.g.* 1N7T_{ITERATION}_seqtol.out).
+- 1N7T_{ITERATION}.ga.entities.gz;
+- 1N7T_{ITERATION}.ga.generations.gz;
+- 1N7T_{ITERATION}_seqtol.out;
+- the input PDB to the sequence tolerance step (read from *e.g.* 1N7T_{ITERATION}_seqtol.out).
 
 where {ITERATION} indicates an member of an ensemble *e.g.* 1N7T_0001.ga.entities.gz. The script will automatically find
 and use all entities.gz and generations.gz files in the current working directory.
@@ -135,12 +135,12 @@ Output files
 
 The analysis generates the following files:
 
- - specificity_pwm.txt; a position weight matrix;
- - specificity_sequences.fasta; a FASTA file which can be used to generate a sequence logo;
- - specificity_boxplot_{RESIDUE POSITION}.png; a series of boxplots per designed position;
- - specificity_boxplot.pdf/.png; a combined PDF/image of the boxplots above;
- - specificity_seqrank.pdf/.png; a predicted ranking table for selected amino acid types for the positions;
- - specificity_seqcontrib.pdf; a sequence contribution plot.
+- specificity_pwm.txt; a position weight matrix;
+- specificity_sequences.fasta; a FASTA file which can be used to generate a sequence logo;
+- specificity_boxplot_{RESIDUE POSITION}.png; a series of boxplots per designed position;
+- specificity_boxplot.pdf/.png; a combined PDF/image of the boxplots above;
+- specificity_seqrank.pdf/.png; a predicted ranking table for selected amino acid types for the positions;
+- specificity_seqcontrib.pdf; a sequence contribution plot.
 
 For more details, see the Smith & Kortemme 2010 paper (references below).
 
@@ -184,15 +184,15 @@ Input files
 The script expects to be run in a sibling directory to the data/ and input/ folders of this archive which contains the output
 data for each benchmark case in its own folder *i.e.*:
 
- - 1A22_1/
- - ...
- - 1A22_6/
- - 1N7T/
- - 1N7T_V83K/
- - 2FNE_A_C_V2048/
- - 2I0L_A_C_V2006/
- - 2IWP_B_A_V1927/
- - 2QMT/
+- 1A22_1/
+- ...
+- 1A22_6/
+- 1N7T/
+- 1N7T_V83K/
+- 2FNE_A_C_V2048/
+- 2I0L_A_C_V2006/
+- 2IWP_B_A_V1927/
+- 2QMT/
 
 where each directory .ga.entities.gz and .ga.generation.gz files, PDBs, and Rosetta standard output files.
 

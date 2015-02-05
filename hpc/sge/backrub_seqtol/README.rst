@@ -15,9 +15,9 @@ Command line options
 
 The backrub_seqtol.py script takes the following options for SGE cluster submission:
 
- - PDB_PATH environment variable, set with the -v qsub option. Required option. This specifies the input PDB structure;
- - SGE_TASK_ID environment variable. This is not set explicitly; it is set using the -t qsub option *e.g.* -t 1-20 performs 20 runs of the script and each runs with a separate task ID;
- - INPUT_PATH environment variable, set with the -v qsub option. Optional, defaults to the directory containing pdb_path.
+- PDB_PATH environment variable, set with the -v qsub option. Required option. This specifies the input PDB structure;
+- SGE_TASK_ID environment variable. This is not set explicitly; it is set using the -t qsub option *e.g.* -t 1-20 performs 20 runs of the script and each runs with a separate task ID;
+- INPUT_PATH environment variable, set with the -v qsub option. Optional, defaults to the directory containing pdb_path.
 
 The -N qsub option used in the examples below simply names the job on the cluster and is optional.
 

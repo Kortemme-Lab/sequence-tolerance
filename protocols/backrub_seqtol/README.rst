@@ -70,10 +70,10 @@ original publications.
 The location of the Rosetta installation should be the directory which contains the checkout of the Rosetta repository
 *i.e.* the directory containing:
 
- - database
- - README.md
- - source
- - tests
+- database
+- README.md
+- source
+- tests
 
 The file uses the
 `JSON <http://www.json.org/>`_ format.
@@ -137,10 +137,10 @@ Command line options
 
 The backrub_seqtol.py script takes the following options which can be specified either directly on the command line or via environment variables (but not both):
 
- - pdb_path (PDB_PATH environment variable). Required option. This specifies the input PDB structure;
- - iteration (SGE_TASK_ID environment variable). Optional, defaults to 1. The script should be run multiple times (*e.g.* 20) to create enough data for analysis. This option should be a unique integer specifying the run number (*e.g.* an integer between 1 and 20);
- - input_path (INPUT_PATH environment variable). Optional, defaults to the directory containing pdb_path;
- - "test_mode". Optional. This sets test parameters in the script to test whether the benchmark is configured correctly. See `Test mode`_ for more details.
+- pdb_path (PDB_PATH environment variable). Required option. This specifies the input PDB structure;
+- iteration (SGE_TASK_ID environment variable). Optional, defaults to 1. The script should be run multiple times (*e.g.* 20) to create enough data for analysis. This option should be a unique integer specifying the run number (*e.g.* an integer between 1 and 20);
+- input_path (INPUT_PATH environment variable). Optional, defaults to the directory containing pdb_path;
+- "test_mode". Optional. This sets test parameters in the script to test whether the benchmark is configured correctly. See `Test mode`_ for more details.
 
 ----------------------------
 Example command line
@@ -308,9 +308,9 @@ Command line options
 
 The seqtol_resfile.py script takes the following required options:
 
- - pdb_path. This specifies the input PDB structure;
- - design_command. As described above *e.g.* "ALLAA" or "PIKAA ADEFGHIKLMNPQRSTVWY" or "PIKAA AFILMPVW" *etc.*;
- - a list of designed positions. As described above *e.g.* B:2002 B:2003 B:2004 B:2005 B:2006.
+- pdb_path. This specifies the input PDB structure;
+- design_command. As described above *e.g.* "ALLAA" or "PIKAA ADEFGHIKLMNPQRSTVWY" or "PIKAA AFILMPVW" *etc.*;
+- a list of designed positions. As described above *e.g.* B:2002 B:2003 B:2004 B:2005 B:2006.
 
 --------------------------------------
 Example command line
@@ -375,10 +375,10 @@ Resfiles are input files for Rosetta which specify which determine side-chain co
 Informally, a resfile is a list of commands, each of which identifies a set of residues and then describes actions on that set.
 Examples of actions are:
 
- - restriction of the set of residues allowed at the positions (controlling sequence identity);
- - disallowing side-chain conformation sampling at the positions;
- - allowing side-chain conformation sampling but preserving the original residue types/sequence identity;
- - perform extra sampling at the positions.
+- restriction of the set of residues allowed at the positions (controlling sequence identity);
+- disallowing side-chain conformation sampling at the positions;
+- allowing side-chain conformation sampling but preserving the original residue types/sequence identity;
+- perform extra sampling at the positions.
 
 The resfile file format is described in full in the Rosetta `User Guide <https://www.rosettacommons.org/docs/latest/resfiles.html>`__.
 The resfiles required for running the benchmark using the backrub_seqtol method are included in this archive and are found
@@ -393,11 +393,11 @@ Movemaps are input files for Rosetta which specify which torsion angles and rigi
 be sampled. Similarly to a resfile, a movemap is a list of commands, each of which identifies a set of residues and then describes
 allowed degrees of freedom for those residues. Examples of degrees of freedom are:
 
- - allow backbone sampling;
- - allow |chi|-angle sampling;
- - disallowing side-chain conformation sampling at the positions;
- - allowing side-chain conformation sampling but preserving the original residue types/sequence identity;
- - perform extra sampling at the positions.
+- allow backbone sampling;
+- allow |chi|-angle sampling;
+- disallowing side-chain conformation sampling at the positions;
+- allowing side-chain conformation sampling but preserving the original residue types/sequence identity;
+- perform extra sampling at the positions.
 
 The movemap file format is described in full in the Rosetta `User Guide <https://www.rosettacommons.org/docs/latest/movemap-file.html>`__.
 Most cases in the benchmark do not require movemaps but the movemap required for running the 1N7T V83K case is included in

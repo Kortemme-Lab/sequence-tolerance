@@ -7,12 +7,10 @@ This sequence tolerance benchmark measures the recapitulation of a reference dis
 conformation of a prototypical sequence.
 
 This benchmark includes:
-- phage display data that describe the peptide recognition preferences for: i) 169 naturally occurring and engineered
-PDZ domain-peptide complexes; ii) the human growth hormone-human growth hormone receptor (hGH-hGHR) interface; and iii)
-the 6 core and boundary residues in GB1.
+
+- phage display data that describe the peptide recognition preferences for: i) 169 naturally occurring and engineered PDZ domain-peptide complexes; ii) the human growth hormone-human growth hormone receptor (hGH-hGHR) interface; and iii) the 6 core and boundary residues in GB1.
 - configuration details for the backrub ensemble protocol described in Smith & Kortemme (2010) and Smith & Kortemme (2011);
-- analysis scripts that compare a predicted multiple sequence alignment to a reference multiple sequence alignment using
-four recapitulation metrics each based on the position weight matrix estimated for the ensemble.
+- analysis scripts that compare a predicted multiple sequence alignment to a reference multiple sequence alignment using four recapitulation metrics each based on the position weight matrix estimated for the ensemble.
 
 This protocol capture is based off the original captures from the Smith & Kortemme papers listed above however most of
 the output directories have been excluded here to reduce the size of the repository. The full output of a successful run
