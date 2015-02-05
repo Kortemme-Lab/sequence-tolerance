@@ -313,7 +313,49 @@ Example command line
 
 ::
 
-  scripts/seqtol_resfile.py input/pdbs/2I0L_A_C_V2006/2I0L_A_C_V2006.pdb "PIKAA ADEFGHIKLMNPQRSTVWY" B:2002 B:2003 B:2004 B:2005 B:2006
+  ${BENCHMARK_PATH}/protocols/backrub_seqtol/seqtol_resfile.py ${BENCHMARK_PATH}/input/pdbs/2I0L_A_C_V2006/2I0L_A_C_V2006.pdb "PIKAA ADEFGHIKLMNPQRSTVWY" B:2002 B:2003 B:2004 B:2005 B:2006
+
+
+------------------------------
+Resfile creation command lines
+------------------------------
+
+The resfiles contained in the input/backrub_seqtol directory were created using the following command lines.
+
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+GB1 Fold Stability Tolerance
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+::
+
+  ${BENCHMARK_PATH}/protocols/backrub_seqtol/seqtol_resfile.py ${BENCHMARK_PATH}/input/pdbs/2QMT/2QMT.pdb "ALLAA" A:5 A:7 A:16 A:18 A:18 A:30 A:33
+
+
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+PDZ Domain Interface Tolerance
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+::
+
+  ${BENCHMARK_PATH}/protocols/backrub_seqtol/seqtol_resfile.py ${BENCHMARK_PATH}/input/pdbs/2I0L_A_C_V2006/2I0L_A_C_V2006.pdb "PIKAA ADEFGHIKLMNPQRSTVWY" B:2002 B:2003 B:2004 B:2005 B:2006
+  ${BENCHMARK_PATH}/protocols/backrub_seqtol/seqtol_resfile.py ${BENCHMARK_PATH}/input/pdbs/2IWP_B_A_V1927/2IWP_B_A_V1927.pdb "PIKAA ADEFGHIKLMNPQRSTVWY" B:1923 B:1924 B:1925 B:1926 B:1927
+  ${BENCHMARK_PATH}/protocols/backrub_seqtol/seqtol_resfile.py ${BENCHMARK_PATH}/input/pdbs/2FNE_A_C_V2048/2FNE_A_C_V2048.pdb "PIKAA ADEFGHIKLMNPQRSTVWY" B:2044 B:2045 B:2046 B:2047 B:2048
+  ${BENCHMARK_PATH}/protocols/backrub_seqtol/seqtol_resfile.py ${BENCHMARK_PATH}/input/pdbs/1N7T/1N7T_01.pdb "PIKAA ADEFGHIKLMNPQRSTVWY" B:303 B:304 B:305 B:306 B:307
+  mv 1N7T_01_seqtol.resfile ${BENCHMARK_PATH}/input/pdbs/1N7T/1N7T_seqtol.resfile
+  cp ${BENCHMARK_PATH}/input/pdbs/1N7T/1N7T_seqtol.resfile ${BENCHMARK_PATH}/input/pdbs/1N7T_V83K/1N7T_V83K_seqtol.resfile
+
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+hGH/hGHR Interface Tolerance
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+::
+
+  ${BENCHMARK_PATH}/protocols/backrub_seqtol/seqtol_resfile.py ${BENCHMARK_PATH}/input/pdbs/1A22_1/1A22_1.pdb "PIKAA ADEFGHIKLMNPQRSTVWY" A:14 A:28 A:47 A:61 A:171 A:179
+  ${BENCHMARK_PATH}/protocols/backrub_seqtol/seqtol_resfile.py ${BENCHMARK_PATH}/input/pdbs/1A22_2/1A22_2.pdb "PIKAA ADEFGHIKLMNPQRSTVWY" A:18 A:42 A:62 A:65 A:164 A:175
+  ${BENCHMARK_PATH}/protocols/backrub_seqtol/seqtol_resfile.py ${BENCHMARK_PATH}/input/pdbs/1A22_3/1A22_3.pdb "PIKAA ADEFGHIKLMNPQRSTVWY" A:21 A:29 A:45 A:60 A:67 A:178
+  ${BENCHMARK_PATH}/protocols/backrub_seqtol/seqtol_resfile.py ${BENCHMARK_PATH}/input/pdbs/1A22_4/1A22_4.pdb "PIKAA ADEFGHIKLMNPQRSTVWY" A:22 A:43 A:66 A:167 A:176 A:183
+  ${BENCHMARK_PATH}/protocols/backrub_seqtol/seqtol_resfile.py ${BENCHMARK_PATH}/input/pdbs/1A22_5/1A22_5.pdb "PIKAA ADEFGHIKLMNPQRSTVWY" A:26 A:44 A:48 A:64 A:168 A:174
+  ${BENCHMARK_PATH}/protocols/backrub_seqtol/seqtol_resfile.py ${BENCHMARK_PATH}/input/pdbs/1A22_6/1A22_6.pdb "PIKAA ADEFGHIKLMNPQRSTVWY" A:25 A:41 A:46 A:63 A:172
 
 
 =======================
