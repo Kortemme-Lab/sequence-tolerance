@@ -30,6 +30,8 @@ application uses a set of weights which have been benchmarked against the data c
 The output from both steps is then processed by the analysis scripts which use Boltzmann weighting to generate a position
 weight matrix for the specified sequence positions.
 
+The backrub and sequence tolerance steps are described in more detail in the `Example command lines`_ section.
+
 ----------------
 Included scripts
 ----------------
@@ -419,17 +421,26 @@ Example command lines
 Backrub step
 ~~~~~~~~~~~~
 
-This step in the protocol generates a Backrub ensemble for each prototypical conformation.
+This step in the protocol uses a Monte Carlo sampling algorithm to generate an ensemble of varied but similar backbone
+structures for the given prototypical conformation.
 
 Typical runtime: 3-5 minutes per structure.
 
-Files generated:
+Example input file:
 
 ::
 
-  ${WORKING_DIRECTORY}/1N7T_01_0001.pdb
-  ${WORKING_DIRECTORY}/1N7T_01_0001_low.pdb
-  ${WORKING_DIRECTORY}/1N7T_01_0001score.sc
+  1N7T_01.pdb                                 A PDB file
+
+Example generated files:
+
+::
+
+  ${WORKING_DIRECTORY}/1N7T_01_0001_low.pdb   The lowest energy structure found during the Monte Carlo simulation
+  ${WORKING_DIRECTORY}/1N7T_01_0001_last.pdb  The last accepted structure during the Monte Carlo simulation (note: backrub_seqtol.py removes this file)
+  ${WORKING_DIRECTORY}/1N7T_01_0001score.sc   The score components from the Rosetta scoring function
+
+An explanation of the main Rosetta score components can be found `here <https://www.rosettacommons.org/docs/latest/score-types.html>`__.
 
 ''''''''''''
 Rosetta 3.2
@@ -457,20 +468,29 @@ Rosetta, 2013-08-11 onwards [3]_
 Sequence tolerance step
 ~~~~~~~~~~~~~~~~~~~~~~~
 
-
 The sequence tolerance protocol is used for specificity prediction and library design. Given an input structure, the
 application uses user-defined inter- and intra-molecular weights to determine the scores of a large number of sequences. In the
 context of the backrub_seqtol protocol, this input structure is a structure created by the backrub step. The default values for
 the weights have been shown to perform well for the structures considered in the references below.
 
+The protocol uses a genetic algorithm which starts with an initial population of sequences and generates successive generations
+where each generation has a better overall score from previous generations.
+
 Typical runtime: 20 minutes per structure.
 
-Files generated:
+Example input files:
 
 ::
 
-  ${WORKING_DIRECTORY}/1N7T_01_0001.ga.entities.gz
-  ${WORKING_DIRECTORY}/1N7T_001.ga.generations.gz
+  ${WORKING_DIRECTORY}/1N7T_01_0001_low.pdb   The lowest energy structure from the backrub step
+  1N7T_01.pdb                                 A resfile for 1N7T_01.pdb
+
+Example generated files:
+
+::
+
+  ${WORKING_DIRECTORY}/1N7T_01_0001.ga.generations.gz    Contains all sequences from every generation
+  ${WORKING_DIRECTORY}/1N7T_01_0001.ga.entities.gz       Contains all sequences from every generation and the fitness of each sequence
 
 ''''''''''''
 Rosetta 3.2
