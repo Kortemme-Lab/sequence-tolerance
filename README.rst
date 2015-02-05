@@ -23,7 +23,7 @@ at http://kortemmelab.ucsf.edu/data/.
 Licensing
 ---------
 
-The contents of the repository *where possible* are licensed under the Creative Commons Attribution 4.0 International License. The license only applies to files which either: i) include the license statement; or ii) which are explicitly listed in some file in the repository as being covered by the license. All other files may be covered under a separate license. The LICENSE file in the root of this repository is present only for the convenience of the user to indicate the license which covers any novel content presented herein.
+The contents of the repository *where possible* are licensed under the MIT License. The license only applies to files which either: i) include the license statement; or ii) which are explicitly listed in some file in the repository as being covered by the license. All other files may be covered under a separate license. The LICENSE file in the root of this repository is present only for the convenience of the user to indicate the license which covers any novel content presented herein.
 
 -------------------------
 Downloading the benchmark
@@ -42,7 +42,7 @@ Directories in this archive
 This archive contains the following directories:
 
 - *data* : contains some data from the Smith and Kortemme 2010 publication about the input structures and proteins.
-- *input* : contains the input files for the benchmark. Input files specific to a particular protocol are in a subdirectory named after the protocol.
+- *input* : contains the input files for the benchmark. Input files specific to a particular protocol are in a subdirectory named after the protocol. The input files are described in more detail in input/README.rst.
 - *output* : these directories are empty by default. This is the default output location for protocols if they are run on the local machine.
 - *output/sample* : contains sample output data that can be used to test the sequence_tolerance.R analysis script.
 - *output/1N7T* : contains sample output data that can be used to partially (see below) test the figures.R script.
@@ -50,251 +50,47 @@ This archive contains the following directories:
 - *protocols* : contains the scripts needed to run a job. The scripts for a protocol are provided in a specific subdirectory.
 - *hpc* : contains scripts that can be used to run the entire benchmark using specific cluster architectures. For practical reasons, a limited number of cluster systems are supported. Please feel free to provide scripts which run the benchmark for your particular cluster system.
 
---------------------------------------
-Analysis
---------------------------------------
+=========
+Protocols
+=========
 
-The analysis script generates four metrics which can be used to evaluate the results of the sequence tolerance simulations.
-The analysis scripts are described in more detail in analysis/README.rst.
+This repository contains one protocol which can be used to run the benchmark. We welcome the inclusion of more protocols.
+Please contact support@kortemmelab.ucsf if you wish to contribute towards the repository.
 
-======================================
+Each protocol is accompanied by specific documentation in its protocol directory.
+
+--------------------------------------
 Protocol 1: Backrub/Sequence Tolerance
-======================================
-
--------------------
-General Information
--------------------
+--------------------------------------
 
 Created by: Colin A. Smith [1]_
 
 Software suite: Rosetta
 
-Protocol directory: backrub_seqtol
+Protocol directory: protocols/backrub_seqtol
 
--------------------
-Description
--------------------
+__________
+References
+__________
 
-This method first generates an ensemble of backbone structures by running backrub simulations on an input structure. For
-each member of the ensemble, a large number of sequences are scored and then Boltzmann weighted to generate a position
-weight matrix for the specified sequence positions. Interactions within and between different parts of the structure can
-be individually reweighted, depending on the desired objective.
+Smith, CA, Kortemme, T. Structure-Based Prediction of the Peptide Sequence Space Recognized by Natural and Synthetic PDZ Domains.
+2010. J Mol Biol 402(2):460-74. `doi: 10.1016/j.jmb.2010.07.032 <http://dx.doi.org/10.1016/j.jmb.2010.07.032>`_.
 
--------------------
-Instructions
--------------------
-
-This protocol uses two Rosetta applications - `backrub <https://www.rosettacommons.org/docs/latest/backrub.html>`_ and
-`sequence_tolerance <https://www.rosettacommons.org/docs/latest/sequence-tolerance.html>`_.
-
-To run this protocol, the backrub application is used to generate an ensemble of structures. Next, the sequence tolerance
-application is used to sample a large number of sequence for each member of the ensemble. A python script is included which
-handles generation of single ensemble member using backrub and sequence scoring using sequence_tolerance. It includes a
-few paths which must be customized to run correctly on a user's system. Please note that 20 backbones is the minimum
-suggested to get acceptable output. The more backbone structures that are generated, the less prone the results will be
-to stochastic fluctuations.
-
-------------------------
-Protocol capture scripts
-------------------------
-
-The protocols/backrub_seqtol/backrub_seqtol.py script is provided to help with running the protocol. It has been modified
-slightly from Colin Smith's original version to try to accommodate changes in the Rosetta command-line flags and default
-score function since the original publications. The default settings use the latest default Rosetta score functions and
-assume a recent version of Rosetta. The script can also be configured for use with older versions of Rosetta so that results
-similar to the publications may be generated.
-
-The purpose of the scripts are to allow the user to use the best general settings. For fine tuning, please see the sections
-below describing the command line flags.
-
-
--------------------
-Common Flags
--------------------
-
-_____________
-General flags
-_____________
-
-+----------------------------+-------------------------------------------------------------------------------------------------------------------------------------------+
-+============================+===========================================================================================================================================+
-| -s 	                     | This flag specifies the starting structure.                                                                                               |
-+----------------------------+-------------------------------------------------------------------------------------------------------------------------------------------+
-| -resfile                   | This is used in backrub and sequence_tolerance to specify mutations and control sequence sampling. It is required for sequence_tolerance. |
-+----------------------------+-------------------------------------------------------------------------------------------------------------------------------------------+
-| -score:weights             | This flag is used to specify a weights file that disables environment dependent hydrogen bonds.                                           |
-+----------------------------+-------------------------------------------------------------------------------------------------------------------------------------------+
-| -score:patch               | This flag must be used to reapply the score12 patch to the standard scoring function.                                                     |
-+----------------------------+-------------------------------------------------------------------------------------------------------------------------------------------+
-| -ex1 -ex2 -extrachi_cutoff | These flags enable higher resolution rotamer librares for mutation and sequence redesign.                                                 |
-+----------------------------+-------------------------------------------------------------------------------------------------------------------------------------------+
-
-
-
-_____________
-Backrub flags
-_____________
-
-
-
-+---------------------------+-------------------------------------------------------------------------------------------------------------------------------------------------------------------+
-+===========================+===================================================================================================================================================================+
-| -backrub:ntrials          | This flag is used to increase the number of Monte Carlo steps above the default of 1000.                                                                          |
-+---------------------------+-------------------------------------------------------------------------------------------------------------------------------------------------------------------+
-| -backrub:minimize_movemap | If mutations are specified in the resfile, this movemap is used to specify degrees of freedom to be minimized in a three stage process: CHI, CHI+BB, CHI+BB+JUMP. |
-+---------------------------+-------------------------------------------------------------------------------------------------------------------------------------------------------------------+
-| -in:file:movemap -sm_prob | Both of these flags are required to enable small phi/psi moves during backrub sampling.                                                                           |
-+---------------------------+-------------------------------------------------------------------------------------------------------------------------------------------------------------------+
-
-
-
-
-________________________
-Sequence_tolerance flags
-________________________
-
-+-----------------------------------------------+------------------------------------------------------------------------------+
-+===============================================+==============================================================================+
-| -ms:checkpoint:prefix -ms:checkpoint:interval | Both of these flags must be specified to get output of the scored sequences. |
-+-----------------------------------------------+------------------------------------------------------------------------------+
-| -ms:generations -ms:pop_size -ms:pop_from_ss  | These flags affect the genetic algorithm used for sequence sampling.         |
-+-----------------------------------------------+------------------------------------------------------------------------------+
-| -score:ref_offsets                            | This flag is used to reweight the reference energies for given residues.     |
-+-----------------------------------------------+------------------------------------------------------------------------------+
-| -seq_tol:fitness_master_weights               | This flag controls the fitness function used for the genetic algorithm.      |
-+-----------------------------------------------+------------------------------------------------------------------------------+
-
-
-----------------------
-Example command lines
-----------------------
-
-____________________
-Paths and extensions
-____________________
-
-The command lines below use placeholders for paths and extensons. Please change these appropriately *e.g.*:
-
-::
-
-  ROSETTA_BASE=<path/to/rosetta>
-  EXTENSION=linuxgccrelease
-  WORKING_DIRECTORY=.
-  BENCHMARK_PATH=<path/to/sequence-tolerance>
-  # edit protocols/backrub_seqtol/settings.json to set some options
-
-Note that the extension will change depending on what options were used to build Rosetta and on the architecture of the
-machine used for the build.
-
-____________
-Backrub step
-____________
-
-This step in the protocol generates a Backrub ensemble for each prototypical conformation.
-
-Typical runtime: 3-5 minutes per structure.
-
-Files generated:
-
-::
-
-  ${WORKING_DIRECTORY}/1N7T_01_0001.pdb
-  ${WORKING_DIRECTORY}/1N7T_01_0001_low.pdb
-  ${WORKING_DIRECTORY}/1N7T_01_0001score.sc
-
-''''''''''''
-Rosetta 3.2
-''''''''''''
-
-::
-
-  ${ROSETTA_BASE}/rosetta_source/bin/backrub.${EXTENSION} -database ${ROSETTA_BASE}/rosetta_database \
-  -s ${BENCHMARK_PATH}/input/pdbs/1N7T_01.pdb -ex1 -ex2 -extrachi_cutoff 0 -mute core.io.pdb.file_data \
-  -backrub:ntrials 10000 -score:weights ${BENCHMARK_PATH}/input/backrub_seqtol/rosetta3.2/standard_NO_HB_ENV_DEP.wts \
-  -score:patch score12
-
-
-''''''''''''''''''''''''''''''''
-Rosetta, 2013-08-11 onwards [2]_
-''''''''''''''''''''''''''''''''
-
-::
-
-  ${ROSETTA_BASE}/source/bin/backrub.${EXTENSION} -database ${ROSETTA_BASE}/database \
-  -s ${BENCHMARK_PATH}/input/pdbs/1N7T_01.pdb -ex1 -ex2 -extrachi_cutoff 0 -mute core.io.pdb.file_data \
-  -backrub:ntrials 10000
-
-_______________________
-Sequence tolerance step
-_______________________
-
-
-The sequence tolerance protocol is used for specificity prediction and library design. Given an input structure, the
-application uses user-defined inter- and intra-molecular weights to determine the scores of a large number of sequences. In the
-context of the backrub_seqtol protocol, this input structure is a structure created by the backrub step. The default values for
-the weights have been shown to perform well for the structures considered in the references below.
-
-Typical runtime: 20 minutes per structure.
-
-Files generated:
-
-::
-
-  ${WORKING_DIRECTORY}/1N7T_01_0001.ga.entities.gz
-  ${WORKING_DIRECTORY}/1N7T_001.ga.generations.gz
-
-''''''''''''
-Rosetta 3.2
-''''''''''''
-
-::
-
-  ${ROSETTA_BASE}/rosetta_source/bin/sequence_tolerance.${EXTENSION} -database ${ROSETTA_BASE}/rosetta_database \
-  -s ${WORKING_DIRECTORY}/pdbs/1N7T_01_0001_low.pdb -ex1 -ex2 -extrachi_cutoff 0 -score:ref_offsets HIS 1.2 \
-  -seq_tol:fitness_master_weights 1 1 1 2 -ms:generations 5 -ms:pop_size 2000 -ms:pop_from_ss 1 \
-  -ms:checkpoint:prefix 1N7T_01_0001 -ms:checkpoint:interval 200 -ms:checkpoint:gz \
-  -score:weights ${BENCHMARK_PATH}/input/backrub_seqtol/rosetta3.2/standard_NO_HB_ENV_DEP.wts -out:prefix 1N7T_01_0001 \
-  -score:patch score12 -resfile ${BENCHMARK_PATH}/input/backrub_seqtol/1N7T_seqtol.resfile
-
-'''''''''''''''''''''''''''
-Rosetta, 2013-08-11 onwards
-'''''''''''''''''''''''''''
-
-::
-
-  ${ROSETTA_BASE}/source/bin/sequence_tolerance.${EXTENSION} -database ${ROSETTA_BASE}/database \
-  -s ${WORKING_DIRECTORY}/pdbs/1N7T_01_0001_low.pdb -ex1 -ex2 -extrachi_cutoff 0 -ex1aro -ex2aro \
-  -seq_tol:fitness_master_weights 1 1 1 2 -ms:generations 5 -ms:pop_size 2000 -ms:pop_from_ss 1 \
-  -ms:checkpoint:prefix 1N7T_01_0001 -ms:checkpoint:interval 200 -ms:checkpoint:gz \
-  -out:prefix 1N7T_01_0001 -resfile ${BENCHMARK_PATH}/input/backrub_seqtol/1N7T_seqtol.resfile
-
-_____________
-Analysis Step
-_____________
-
-Once the sequence tolerance step is completed, the analysis can be run as described in analysis/README.rst
-
-----------------------------
-Supporting tool versions
-----------------------------
-
-This protocol capture has been tested with:
-
-- Python 2.4.3 and R 2.12.1
-- Python 2.7.8 and R 3.1.1
-
--------------------------------------------------
-References to published works using this protocol
--------------------------------------------------
-
-Smith, CA, Kortemme, T. Structure-Based Prediction of the Peptide Sequence Space Recognized by Natural and Synthetic PDZ Domains. 2010. J Mol Biol 402(2):460-74. `doi: 10.1016/j.jmb.2010.07.032 <http://dx.doi.org/10.1016/j.jmb.2010.07.032>`_.
-
-Smith, CA, Kortemme, T. Predicting the Tolerated Sequences for Proteins and Protein Interfaces Using RosettaBackrub
-Flexible Backbone Design. 2011.
-PLoS ONE 6(7):e20451. `doi: 10.1371/journal.pone.0020451 <http://dx.doi.org/10.1371/journal.pone.0020451>`_.
+Smith, CA, Kortemme, T. Predicting the Tolerated Sequences for Proteins and Protein Interfaces Using RosettaBackrub Flexible Backbone Design.
+2011. PLoS ONE 6(7):e20451. `doi: 10.1371/journal.pone.0020451 <http://dx.doi.org/10.1371/journal.pone.0020451>`_.
 
 
 .. [1] The original version of this protocol capture was developed and tested for Rosetta 3.2. Any errors in the current version above are likely to be our fault rather than that of the original author. Please contact support@kortemmelab.ucsf.edu with any issues which may arise.
 
-.. [2] The default Rosetta score function switched to Talaris 2013, making some previous flags redundant.
 
+========
+Analysis
+========
+
+The same set of analysis scripts is used by all protocols. Conceptually, the analysis scripts should be a black box that
+is separated from the output of each protocol by an interface. Currently, the scripts are tied particularly to the Rosetta
+protocol included herein however we are happy to make the scripts more modular once another protocol is added to the
+benchmark capture.
+
+The analysis scripts generates four metrics which can be used to evaluate the results of the sequence tolerance simulations as
+well as a series of plots. The scripts are described in more detail in analysis/README.rst.
