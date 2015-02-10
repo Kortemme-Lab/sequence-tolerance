@@ -60,7 +60,7 @@ GB1 Fold Stability Tolerance
 
 ::
 
-  qsub -v BENCHMARK_PATH=${BENCHMARK_PATH} -v PDB_PATH=${BENCHMARK_PATH}/input/pdbs/2QMT/2QMT.pdb -v INPUT_PATH=${BENCHMARK_PATH}/input/backrub_seqtol/2QMT -t 1-20 -N bs_2QMT ${BENCHMARK_PATH}/protocols/backrub_seqtol/backrub_seqtol.py
+  qsub -v BENCHMARK_PATH=${BENCHMARK_PATH} -v PDB_PATH=${BENCHMARK_PATH}/input/pdbs/2QMT/2QMT.pdb -v INPUT_PATH=${BENCHMARK_PATH}/input/backrub_seqtol/2QMT -t 1-200 -N bs_2QMT ${BENCHMARK_PATH}/protocols/backrub_seqtol/backrub_seqtol.py
 
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 PDZ Domain Interface Tolerance
