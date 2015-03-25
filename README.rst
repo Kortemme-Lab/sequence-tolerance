@@ -2,9 +2,9 @@
 Sequence tolerance benchmark
 ====================================
 
-Sequence tolerance protocols predict the tolerated sequence space for a given protein-protein interface or protein domain.
-This sequence tolerance benchmark measures the recapitulation of a reference distribution over a sequence space given the
-conformation of a prototypical sequence.
+Recognition specificity, or sequence tolerance, protocols predict the tolerated sequence space for a given protein-protein
+interface or protein domain. This sequence tolerance benchmark measures the recapitulation of a reference distribution over
+a sequence space given the conformation of a prototypical sequence.
 
 This benchmark includes:
 
@@ -21,7 +21,8 @@ at http://kortemmelab.ucsf.edu/data/.
 Licensing
 ---------
 
-The contents of the repository *where possible* are licensed under the MIT License. The license only applies to files which either: i) include the license statement; or ii) which are explicitly listed in some file in the repository as being covered by the license. All other files may be covered under a separate license. The LICENSE file in the root of this repository is present only for the convenience of the user to indicate the license which covers any novel content presented herein.
+This repository contains third party libraries and materials which are distributed under their own terms (see
+LICENSE-3RD-PARTY). The novel content in this repository is licensed according to LICENSE.
 
 -------------------------
 Downloading the benchmark
