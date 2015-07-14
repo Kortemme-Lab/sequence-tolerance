@@ -1,6 +1,10 @@
 import time
 import math
 import sys
+import os
+import time
+from subprocess import Popen, PIPE, check_call
+import signal
 
 one_letter_codes={}
 one_letter_codes['ALA']='A'
@@ -87,3 +91,27 @@ class Reporter:
             return self.completion_time - self.start
         else:
             return time.time() - self.start
+
+class LineReader:
+    def __init__(self,fname):
+        if fname.endswith('.gz'):
+            if not os.path.isfile(fname):
+                raise IOError(fname)
+            self.f = Popen(['gunzip', '-c', fname], stdout=PIPE, stderr=PIPE)
+            self.zipped=True
+        else:
+            self.f = open(fname,'r')
+            self.zipped=False
+    def readlines(self):
+        if self.zipped:
+            for line in self.f.stdout:
+                yield line
+        else:
+            for line in self.f.readlines():
+                yield line
+    def close(self):
+        if self.zipped:
+            if self.f.poll() == None:
+                os.kill(self.f.pid,signal.SIGHUP)
+        else:
+            self.f.close()
