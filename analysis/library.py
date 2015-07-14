@@ -72,6 +72,8 @@ class Reporter:
             sys.stdout.flush()
     def increment_report(self):
         self.report(self.n+1)
+    def increment_report_callback(self, return_value):
+        self.report(self.n+1)
     def decrement_report(self):
         self.report(self.n-1)
     def add_to_report(self,x):
