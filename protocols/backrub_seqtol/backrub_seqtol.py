@@ -142,8 +142,14 @@ if os.environ.has_key("PDB_PATH"):
 elif len(script_arguments) >= 2:
     pdb_path = os.path.abspath(script_arguments[1])
 else:
-    sys.exit("No start PDB file specified")
-assert(os.path.exists(pdb_path))
+    sys.exit("No start PDB file specified.")
+if pdb_path.find('%') == -1:
+    if not os.path.exists(pdb_path):
+        sys.exit('Could not find the PDB file "%s".' % pdb_path)
+else:
+    # todo: We should do a glob call here and make sure that the results of the glob are not empty
+    if not os.path.exists(os.path.split(pdb_path)[0]):
+        sys.exit('The folder "%s" does not exist.' % pdb_path)
 
 
 # Determine the iteration from either the SGE_TASK_ID environment variable or 
@@ -307,9 +313,7 @@ try:
 except:
     if not os.path.exists(output_dir):
         print("The output directory %s could not be created." % output_dir)
-    else:
-        print("An error occurred while creating the output directory %s." % output_dir)
-    sys.exit(1)
+        sys.exit(1)
 os.chdir(output_dir)
 
 time_start = time.time()
