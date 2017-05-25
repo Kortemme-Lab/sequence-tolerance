@@ -40,7 +40,7 @@ import os
 import gzip
 from subprocess import Popen, PIPE, check_call
 import sys
-import library
+import library # library.py, also located in analysis folder
 import time
 import re
 from multiprocessing import Pool
@@ -49,7 +49,7 @@ import multiprocessing
 def main():
     search_dir = sys.argv[1]
     assert(os.path.isdir(search_dir))
-    
+
     files_to_convert = []
     for directory_root, directory, filenames in os.walk(search_dir):
         for filename in filenames:
